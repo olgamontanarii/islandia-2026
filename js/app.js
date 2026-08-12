@@ -14,19 +14,20 @@ console.log("Días disponibles:", tripDays);
    ELEMENTOS DEL HTML QUE VAMOS A MODIFICAR
 ========================================================= */
 
-/*
-  Buscamos todos los botones que tengan la clase .day.
-*/
+/* Todos los botones de navegación */
 const dayButtons = document.querySelectorAll(".day");
 
 
-/*
-  Buscamos el contenedor principal.
-
-  Aquí iremos sustituyendo el contenido cuando
-  el usuario cambie de día.
-*/
+/* Contenido del itinerario */
 const content = document.querySelector(".content");
+
+
+/* Botón especial del mapa */
+const mapButton = document.querySelector(".map-tab");
+
+
+/* Sección donde estará el mapa */
+const mapSection = document.querySelector("#map-section");
 
 
 /* =========================================================
@@ -255,36 +256,83 @@ function setActiveDay(selectedButton) {
 
 
 /* =========================================================
-   EVENTOS DE LOS BOTONES
+   BOTONES DE LOS DÍAS
 ========================================================= */
 
 dayButtons.forEach((button, index) => {
 
-  /*
-    Escuchamos el clic sobre cada botón.
-  */
   button.addEventListener("click", () => {
 
     /*
-      index vale:
-      0 para Día 1
-      1 para Día 2
-      2 para Día 3
-      etc.
+      IMPORTANTE:
 
-      Por eso podemos utilizarlo directamente
-      para buscar el día dentro de tripDays.
+      Dentro de .day ahora también está el botón MAPA.
+
+      El mapa NO corresponde a un elemento de tripDays,
+      por eso comprobamos que este botón no sea .map-tab.
     */
+    if (button.classList.contains("map-tab")) {
+      return;
+    }
+
+
+    /* Día correspondiente */
     const selectedDay = tripDays[index];
 
 
-    /* Cambiamos visualmente el botón activo */
+    /* Marcamos el día seleccionado */
     setActiveDay(button);
 
 
-    /* Mostramos el nuevo día */
+    /* Ocultamos el mapa por si estaba abierto */
+    mapSection.classList.add("hidden");
+
+
+    /* Volvemos a mostrar el itinerario */
+    content.classList.remove("hidden");
+
+
+    /* Dibujamos el día seleccionado */
     renderDay(selectedDay);
 
   });
+
+});
+
+/* =========================================================
+   PESTAÑA MAPA GENERAL
+
+   Cuando pulsamos "MAPA":
+   - ocultamos el itinerario
+   - mostramos la sección del mapa
+
+   Cuando volvemos a pulsar un día:
+   - mostramos el itinerario
+   - ocultamos el mapa
+========================================================= */
+
+
+/* =========================================================
+   MOSTRAR MAPA
+========================================================= */
+
+mapButton.addEventListener("click", () => {
+
+  /* Quitamos "active" de todos los días */
+  dayButtons.forEach(button => {
+    button.classList.remove("active");
+  });
+
+
+  /* Marcamos MAPA como seleccionado */
+  mapButton.classList.add("active");
+
+
+  /* Ocultamos el itinerario */
+  content.classList.add("hidden");
+
+
+  /* Mostramos el mapa */
+  mapSection.classList.remove("hidden");
 
 });
