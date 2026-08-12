@@ -1,0 +1,22 @@
+body {
+  margin: 0;
+  background: #f8f6f1;
+  color: #222;
+  font-family: Arial, sans-serif;
+}
+
+.topbar {
+  background: #17395f;
+  color: white;
+  padding: 16px 24px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-family: Georgia, serif;
+  font-size: 28px;
+}
