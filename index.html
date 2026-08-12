@@ -18,6 +18,17 @@
      ?v=3 fuerza al navegador a descargar la versión nueva
      en lugar de reutilizar una versión antigua de la caché. -->
 <link rel="stylesheet" href="./css/styles.css?v=3">
+  <!-- =====================================================
+     LEAFLET · ESTILOS DEL MAPA
+====================================================== -->
+
+<link
+
+  rel="stylesheet"
+
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+
+/>
 
 </head>
 
@@ -493,13 +504,11 @@
 
     </section>
   </main>
-<!-- =====================================================
-     JAVASCRIPT
-
-     Primero cargamos los datos del viaje.
-     Después cargamos la lógica que utiliza esos datos.
-====================================================== -->
-
+ <!-- Leaflet -->
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+<!-- Nuestros archivos -->
 <script src="./js/data.js?v=3"></script>
 <script src="./js/app.js?v=3"></script>
 
