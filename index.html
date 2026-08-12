@@ -1,264 +1,457 @@
 <!DOCTYPE html>
 <html lang="es">
-  
+
 <head>
-  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- =========================================
+       CONFIGURACIÓN GENERAL DE LA PÁGINA
+  ========================================== -->
   <meta charset="UTF-8">
+
+  <!-- Hace que la web se adapte bien a móvil y tablet -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Islandia 2026</title>
+  <!-- Título que aparece en la pestaña del navegador -->
+  <title>🇮🇸Islandia 2026</title>
+
+  <!--
+    Conectamos este HTML con nuestro archivo CSS.
+    Aquí estarán todos los estilos visuales de la web.
+  -->
+  <link rel="stylesheet" href="css/styles.css">
+
 </head>
 
 <body>
-
+  <!-- =========================================
+       CABECERA SUPERIOR
+       Barra azul con el título y las fechas
+  ========================================== -->
   <header class="topbar">
+
+    <!-- Título principal de la web -->
     <h1>🇮🇸 Islandia 2026</h1>
+    <span>
+      9–14 SEP 2026 · familia Montanari Ferreira
+    </span>
 
-    <span>9–14 SEP 2026 · familia Montanari Ferreira</span>
   </header>
+
+  <!-- NAVEGACIÓN ENTRE DÍAS -->
+
   <nav class="days">
-  <button class="day active">
-    <span>01</span>
-    <small>MIÉ 9</small>
-  </button>
+    <!-- Día seleccionado actualmente -->
+    <button class="day active">
 
-  <button class="day">
-    <span>02</span>
-    <small>JUE 10</small>
-  </button>
+      <!-- Número del día dentro del viaje -->
+      <span>01</span>
 
-  <button class="day">
-    <span>03</span>
-    <small>VIE 11</small>
-  </button>
+      <!-- Día de la semana y fecha -->
+      <small>MIÉ 9</small>
 
-  <button class="day">
-    <span>04</span>
-    <small>SÁB 12</small>
-  </button>
+    </button>
 
-  <button class="day">
-    <span>05</span>
-    <small>DOM 13</small>
-  </button>
-
-  <button class="day">
-    <span>06</span>
-    <small>LUN 14</small>
-  </button>
-</nav>
+    <button class="day">
+      <span>02</span>
+      <small>JUE 10</small>
+    </button>
 
 
-<main class="content">
+    <button class="day">
+      <span>03</span>
+      <small>VIE 11</small>
+    </button>
 
-  <section class="hero">
 
-    <span class="giant-number">01</span>
+    <button class="day">
+      <span>04</span>
+      <small>SÁB 12</small>
+    </button>
 
-    <div class="hero-content">
 
-      <p class="eyebrow">
-        DÍA 01 · MIÉRCOLES 9 DE SEPTIEMBRE
-      </p>
+    <button class="day">
+      <span>05</span>
+      <small>DOM 13</small>
+    </button>
 
-      <h2>
-        Círculo<br>
-        Dorado
-      </h2>
 
-      <p class="intro">
-        Nuestro primer día en Islandia.
-        Camper, paisajes volcánicos y aguas termales.
-      </p>
+    <button class="day">
+      <span>06</span>
+      <small>LUN 14</small>
+    </button>
 
-      <div class="stats">
+  </nav>
 
-        <div class="stat">
-          <strong>190</strong>
-          <span>KM</span>
-        </div>
 
-        <div class="stat">
-          <strong>3H 20</strong>
-          <span>CONDUCIENDO</span>
-        </div>
+  <!-- =========================================
+       CONTENIDO PRINCIPAL
+  ========================================== -->
 
-        <div class="stat">
-          <strong>7–8H</strong>
-          <span>DE RUTA</span>
-        </div>
+  <main class="content">
 
-        <div class="stat">
-          <strong>RELAX</strong>
-          <span>RITMO DEL DÍA</span>
-        </div>
+    <!-- HERO DEL DÍA
+         Resumen visual de la jornada -->
 
-      </div>
+    <section class="hero">
+      <span class="giant-number">
+        01
+      </span>
+      <!-- Contenido principal del hero -->
+      <div class="hero-content">
+        <!-- Fecha completa -->
+        <p class="eyebrow">
+          DÍA 01 · MIÉRCOLES 9 DE SEPTIEMBRE
+        </p>
+        <h2>
+          Círculo<br>
+          Dorado
+        </h2>
 
-    </div>
 
-  </section>
-  <section class="timeline-section">
-
-  <div class="section-heading">
-    <p class="eyebrow">RUTA DEL DÍA</p>
-    <h3>Qué hacemos hoy</h3>
-  </div>
-
-  <div class="timeline">
-
-    <article class="activity">
-      <div class="activity-time">12:00</div>
-
-      <div class="activity-dot"></div>
-
-      <div class="activity-card">
-        <div class="activity-top">
-          <span class="activity-icon">🚐</span>
-
-          <div>
-            <p class="activity-label">INICIO</p>
-            <h4>Recogida de la camper</h4>
-          </div>
-        </div>
-
-        <p class="activity-description">
-          Recogemos la camper, organizamos equipaje y dejamos todo listo para empezar la ruta.
+        <!-- Pequeña descripción del día -->
+        <p class="intro">
+          Nuestro primer día en Islandia.
+          Camper, paisajes volcánicos y aguas termales.
         </p>
 
-        <div class="activity-tags">
-          <span>⏱ 1 h</span>
-          <span>📍 Keflavík</span>
-          <span>🟢 Sin reserva</span>
-        </div>
-      </div>
-    </article>
 
+        <!-- DATOS RÁPIDOS DEL DÍA -->
 
-    <article class="activity">
-      <div class="activity-time">14:00</div>
-
-      <div class="activity-dot"></div>
-
-      <div class="activity-card">
-        <div class="activity-top">
-          <span class="activity-icon">🌋</span>
-
-          <div>
-            <p class="activity-label">PARQUE NACIONAL</p>
-            <h4>Þingvellir</h4>
+        <div class="stats">
+          <!-- Kilómetros aproximados -->
+          <div class="stat">
+            <strong>190</strong>
+            <span>KM</span>
           </div>
+
+          <!-- Tiempo aproximado conduciendo -->
+          <div class="stat">
+            <strong>3H 20</strong>
+            <span>CONDUCIENDO</span>
+          </div>
+
+
+          <!-- Duración total aproximada -->
+          <div class="stat">
+            <strong>7–8H</strong>
+            <span>DE RUTA</span>
+          </div>
+
+
+          <!-- Intensidad o ritmo -->
+          <div class="stat">
+            <strong>RELAX</strong>
+            <span>RITMO DEL DÍA</span>
+          </div>
+
         </div>
 
-        <p class="activity-description">
-          Primera parada del viaje y paseo por una de las zonas geológicas más importantes de Islandia.
+      </div>
+
+    </section>
+
+
+    <!-- RUTA DEL DÍA
+         Timeline con las actividades y paradas -->
+
+    <section class="timeline-section">
+
+      <!-- Título de la sección -->
+      <div class="section-heading">
+
+        <p class="eyebrow">
+          RUTA DEL DÍA
         </p>
 
-        <div class="activity-tags">
-          <span>⏱ 1 h 30</span>
-          <span>🥾 Fácil</span>
-          <span>📸 Muy top</span>
-        </div>
+        <h3>
+          Qué hacemos hoy
+        </h3>
 
-        <div class="activity-actions">
-          <a href="#" class="action-link">📍 Maps</a>
-          <a href="#" class="action-link">ℹ️ Detalles</a>
-        </div>
       </div>
-    </article>
 
 
-    <article class="activity">
-      <div class="activity-time">16:30</div>
+      <!-- CONTENEDOR DE LA TIMELINE -->
 
-      <div class="activity-dot"></div>
+      <div class="timeline">
 
-      <div class="activity-card">
-        <div class="activity-top">
-          <span class="activity-icon">💦</span>
 
-          <div>
-            <p class="activity-label">GEOTERMIA</p>
-            <h4>Geysir</h4>
+        <!-- PARADA 1 · RECOGIDA CAMPER -->
+
+        <article class="activity">
+
+          <!-- Hora de comienzo -->
+          <div class="activity-time">
+            12:00 ???? HAY QUE MIRAR A QUE HORA LLEGAMOS
           </div>
-        </div>
+          <div class="activity-dot"></div>
 
-        <p class="activity-description">
-          Parada breve en la zona geotérmica para ver Strokkur en erupción.
-        </p>
+          <!-- Tarjeta con la información -->
+          <div class="activity-card">
 
-        <div class="activity-tags">
-          <span>⏱ 45 min</span>
-          <span>🟢 Sin reserva</span>
-        </div>
-      </div>
-    </article>
+            <!-- Cabecera de la actividad -->
+            <div class="activity-top">
+              <!-- Icono -->
+              <span class="activity-icon">
+                🚐
+              </span>
+
+              <div>
+                <!-- Categoría -->
+                <p class="activity-label">
+                  INICIO
+                </p>
+                <!-- Nombre de la actividad -->
+                <h4>
+                  Recogida de la camper
+                </h4>
+              </div>
+            </div>
+            <!-- Descripción -->
+            <p class="activity-description">
+              Recogemos la camper, organizamos equipaje
+              y dejamos todo listo para empezar la ruta.
+            </p>
 
 
-    <article class="activity">
-      <div class="activity-time">18:00</div>
+            <!-- Datos rápidos -->
+            <div class="activity-tags">
+              <span>⏱ 1 h</span>
 
-      <div class="activity-dot"></div>
+              <span>📍 Keflavík</span>
+              <span>🟢 Sin reserva</span>
+            </div>
 
-      <div class="activity-card">
-        <div class="activity-top">
-          <span class="activity-icon">🌊</span>
-
-          <div>
-            <p class="activity-label">CASCADA</p>
-            <h4>Gullfoss</h4>
           </div>
-        </div>
 
-        <p class="activity-description">
-          Una de las cascadas más famosas del país y última gran parada del Círculo Dorado.
-        </p>
-
-        <div class="activity-tags">
-          <span>⏱ 1 h</span>
-          <span>📸 Top</span>
-        </div>
-      </div>
-    </article>
+        </article>
 
 
-    <article class="activity">
-      <div class="activity-time">20:00</div>
+        <!-- PARADA 2 · ÞINGVELLIR -->
 
-      <div class="activity-dot"></div>
+        <article class="activity">
 
-      <div class="activity-card featured">
-        <div class="activity-top">
-          <span class="activity-icon">♨️</span>
 
-          <div>
-            <p class="activity-label">RELAX</p>
-            <h4>Secret Lagoon</h4>
+          <div class="activity-time">
+            14:00
           </div>
-        </div>
 
-        <p class="activity-description">
-          Terminamos el día bañándonos en aguas termales antes de ir al camping.
-        </p>
+          <div class="activity-dot"></div>
 
-        <div class="activity-tags">
-          <span>⏱ 1 h 30</span>
-          <span>🟠 Mejor reservar</span>
-        </div>
+          <div class="activity-card">
 
-        <div class="activity-actions">
-          <a href="#" class="action-link primary">🎟 Reservar</a>
-          <a href="#" class="action-link">📍 Maps</a>
-        </div>
+            <div class="activity-top">
+
+              <span class="activity-icon">
+                🌋
+              </span>
+
+              <div>
+
+                <p class="activity-label">
+                  PARQUE NACIONAL
+                </p>
+
+                <h4>
+                  Þingvellir
+                </h4>
+
+              </div>
+
+            </div>
+
+            <p class="activity-description">
+              Primera parada del viaje y paseo por una
+              de las zonas geológicas más importantes
+              de Islandia.
+            </p>
+
+            <div class="activity-tags">
+
+              <span>⏱ 1 h 30</span>
+
+              <span>🥾 Fácil</span>
+
+            </div>
+
+            <!-- =================================
+                 BOTONES DE ACCIÓN
+                 Los enlaces se completarán luego
+            ================================== -->
+            <div class="activity-actions">
+              <!--
+                href="#" es temporal.
+                Más adelante pondremos el enlace real
+                de Google Maps.
+              -->
+              <a href="#" class="action-link">
+                📍 Maps
+              </a>
+              <!--
+                Más adelante este botón podrá abrir
+                información adicional de la actividad.
+              -->
+              <a href="#" class="action-link">
+                ℹ️ Detalles
+              </a>
+            </div>
+          </div>
+        </article>
+        <!-- PARADA 3 · GEYSIR -->
+
+        <article class="activity">
+          <div class="activity-time">
+            16:30
+          </div>
+
+          <div class="activity-dot"></div>
+
+          <div class="activity-card">
+
+            <div class="activity-top">
+
+              <span class="activity-icon">
+                💦
+              </span>
+
+              <div>
+
+                <p class="activity-label">
+                  GEOTERMIA
+                </p>
+                <h4>
+                  Geysir
+                </h4>
+
+              </div>
+
+            </div>
+
+            <p class="activity-description">
+              Parada breve en la zona geotérmica
+              para ver Strokkur en erupción.
+            </p>
+
+            <div class="activity-tags">
+              <span>⏱ 45 min</span>
+
+              <span>🟢 Sin reserva</span>
+
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- PARADA 4 · GULLFOSS -->
+
+        <article class="activity">
+          <div class="activity-time">
+            18:00
+          </div>
+
+          <div class="activity-dot"></div>
+
+          <div class="activity-card">
+
+            <div class="activity-top">
+
+              <span class="activity-icon">
+                🌊
+              </span>
+
+              <div>
+
+                <p class="activity-label">
+                  CASCADA
+                </p>
+
+                <h4>
+                  Gullfoss
+                </h4>
+
+              </div>
+
+            </div>
+
+
+            <p class="activity-description">
+              Una de las cascadas más famosas del país
+              y última gran parada del Círculo Dorado.
+            </p>
+
+
+            <div class="activity-tags">
+
+              <span>⏱ 1 h</span>
+
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- PARADA 5 · SECRET LAGOON -->
+
+        <article class="activity">
+          <div class="activity-time">
+            20:00
+          </div>
+
+          <div class="activity-dot"></div>
+          <!--
+            Esta tarjeta tiene dos clases:
+            activity-card
+            featured
+            "featured" nos permite destacar visualmente
+            una actividad especial.
+          -->
+          <div class="activity-card featured">
+            <div class="activity-top">
+              <span class="activity-icon">
+                ♨️
+              </span>
+              <div>
+                <p class="activity-label">
+                  RELAX
+                </p>
+                <h4>
+                  Secret Lagoon
+                </h4>
+              </div>
+
+            </div>
+            <p class="activity-description">
+              Terminamos el día bañándonos en aguas
+              termales antes de ir al camping.
+            </p>
+            <div class="activity-tags">
+              <span>⏱ 1 h 30</span>
+              <span>🟠 Mejor reservar</span>
+            </div>
+
+            <!-- Botones -->
+            <div class="activity-actions">
+
+              <!--
+                Este botón usa también la clase "primary"
+                para darle más importancia visual.
+              -->
+              <a href="#" class="action-link primary">
+                🎟 Reservar
+              </a>
+
+              <a href="#" class="action-link">
+                📍 Maps
+              </a>
+            </div>
+          </div>
+        </article>
       </div>
-    </article>
 
-  </div>
-
-</section>
-  
-</main>
-
+    </section>
+  </main>
 </body>
 
 </html>
