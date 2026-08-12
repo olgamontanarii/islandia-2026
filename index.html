@@ -87,7 +87,42 @@
   <small>MAPA</small>
 </button>
   </nav>
+<!-- =========================================
+     SECCIÓN DEL MAPA GENERAL
 
+     De momento solo creamos el contenedor.
+     Más adelante JavaScript decidirá cuándo
+     mostrarlo y Leaflet dibujará el mapa dentro.
+========================================== -->
+
+<section id="map-section" class="map-section hidden">
+
+  <div class="map-header">
+
+    <p class="eyebrow">
+      MAPA DEL VIAJE
+    </p>
+
+    <h2>
+      Islandia sobre el mapa
+    </h2>
+
+    <p>
+      Aquí veremos la ruta, actividades, campings,
+      supermercados y otros puntos útiles.
+    </p>
+
+  </div>
+
+
+  <!--
+    Este div será literalmente el mapa.
+    Leaflet necesita un elemento con un ID
+    para saber dónde dibujarse.
+  -->
+  <div id="map"></div>
+
+</section>
 
   <!-- =========================================
        CONTENIDO PRINCIPAL
