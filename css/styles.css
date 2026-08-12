@@ -145,3 +145,10 @@
 
   font-size: 14px;
 }
+
+
+/* PRUEBA PARA COMPROBAR QUE EL CSS ESTÁ CONECTADO */
+
+body {
+  border: 10px solid red !important;
+}
