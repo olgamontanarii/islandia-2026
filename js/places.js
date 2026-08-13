@@ -1,6 +1,5 @@
 /* =========================================================
    PUNTOS ÚTILES DEL VIAJE
-
    Aquí guardaremos:
    - campings
    - supermercados
