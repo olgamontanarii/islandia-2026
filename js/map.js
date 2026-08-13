@@ -26,6 +26,7 @@
   Estas coordenadas centran el mapa aproximadamente
   sobre Islandia.
 */
+
 const map = L.map("map").setView(
   [64.9, -18.6],
   6
@@ -44,6 +45,7 @@ const map = L.map("map").setView(
 
   Usamos OpenStreetMap como mapa base.
 */
+
 L.tileLayer(
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   {
@@ -56,97 +58,147 @@ L.tileLayer(
 
 
 /* =========================================================
-   MARCADORES DE PRUEBA
+   CAPAS DEL MAPA
+
+   Guardaremos aquí los elementos que dibujamos.
+
+   Esto nos permitirá borrarlos fácilmente cuando
+   cambiemos entre:
+   - TODO
+   - DÍA 1
+   - DÍA 2
+   - CAMPINGS
+   - SUPERMERCADOS
 ========================================================= */
 
-/*
-  De momento añadimos algunos puntos para comprobar
-  que todo funciona.
-
-  Más adelante estos puntos NO estarán escritos aquí.
-  Los sacaremos automáticamente de data.js.
-*/
-
-
-/* Keflavík */
-L.marker([63.985, -22.6056])
-  .addTo(map)
-  .bindPopup(`
-    <strong>🚐 Keflavík</strong><br>
-    Recogida de la camper
-  `);
-
-
-/* Þingvellir */
-L.marker([64.2559, -21.1300])
-  .addTo(map)
-  .bindPopup(`
-    <strong>🌋 Þingvellir</strong><br>
-    Parque Nacional
-  `);
-
-
-/* Geysir */
-L.marker([64.3104, -20.3024])
-  .addTo(map)
-  .bindPopup(`
-    <strong>💦 Geysir</strong><br>
-    Zona geotérmica
-  `);
-
-
-/* Gullfoss */
-L.marker([64.3271, -20.1199])
-  .addTo(map)
-  .bindPopup(`
-    <strong>🌊 Gullfoss</strong><br>
-    Cascada
-  `);
-
-
-/* Secret Lagoon */
-L.marker([64.1377, -20.3097])
-  .addTo(map)
-  .bindPopup(`
-    <strong>♨️ Secret Lagoon</strong><br>
-    Aguas termales
-  `);
+const routeLayer = L.layerGroup().addTo(map);
 
 
 /* =========================================================
-   RUTA DE PRUEBA
+   DIBUJAR UN DÍA EN EL MAPA
 ========================================================= */
 
-/*
-  Dibujamos una línea entre las paradas.
-
-  IMPORTANTE:
-  Esto NO representa todavía la carretera real.
-
-  Es simplemente una línea entre coordenadas para
-  comprobar que el sistema funciona.
-
-  Más adelante tendremos una ruta real de conducción.
-*/
-const dayOneRoute = [
-
-  [63.985, -22.6056],   // Keflavík
-
-  [64.2559, -21.1300], // Þingvellir
-
-  [64.3104, -20.3024], // Geysir
-
-  [64.3271, -20.1199], // Gullfoss
-
-  [64.1377, -20.3097]  // Secret Lagoon
-
-];
+function drawDayRoute(day) {
+  routeLayer.clearLayers();
+  const routeCoordinates = [];
 
 
-L.polyline(
-  dayOneRoute,
-  {
-    weight: 4,
-    opacity: 0.7
+  /* =======================================================
+     RECORRER TODAS LAS ACTIVIDADES
+  ======================================================= */
+
+  day.activities.forEach(activity => {
+    if (!activity.location) {
+      return;
+    }
+
+    /*
+      Extraemos las coordenadas de la actividad.
+    */
+     
+    const coordinates = [
+      activity.location.lat,
+      activity.location.lng
+    ];
+
+
+    /*
+      Guardamos las coordenadas para construir
+      posteriormente la ruta.
+    */
+     
+    routeCoordinates.push(coordinates);
+
+
+    /* =====================================================
+       CREAR MARCADOR
+    ===================================================== */
+
+    const marker = L.marker(coordinates);
+
+    /*
+      Popup que aparece cuando pulsamos
+      sobre el marcador.
+    */
+    marker.bindPopup(`
+
+      <strong>
+        ${activity.icon} ${activity.title}
+      </strong>
+
+      <br>
+
+      ${activity.location.name}
+
+      <br><br>
+
+      ${activity.description}
+
+    `);
+
+
+    /*
+      Añadimos el marcador a nuestra capa.
+    */
+    marker.addTo(routeLayer);
+
+  });
+
+
+  /* =======================================================
+     DIBUJAR LÍNEA ENTRE LAS PARADAS
+  ======================================================= */
+  if (routeCoordinates.length >= 2) {
+
+    const routeLine = L.polyline(
+      routeCoordinates,
+      {
+        weight: 4,
+        opacity: 0.7
+      }
+    );
+
+
+    routeLine.addTo(routeLayer);
+
   }
-).addTo(map);
+
+
+  /* =======================================================
+     ENCUADRAR EL DÍA
+  ======================================================= */
+
+  /*
+    Si tenemos puntos en el mapa, Leaflet calcula
+    automáticamente el zoom necesario para que
+    podamos ver toda la ruta del día.
+
+    ESTO es el fitBounds del que hablábamos antes.
+
+    Aquí sí tiene sentido porque estamos viendo
+    específicamente UN día.
+  */
+  if (routeCoordinates.length > 0) {
+
+    map.fitBounds(
+      routeCoordinates,
+      {
+        padding: [60, 60]
+      }
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   MOSTRAR DÍA 1 AL INICIAR
+
+   De momento dibujamos el Día 1.
+
+   Después crearemos los botones:
+   TODO · DÍA 1 · DÍA 2 · ...
+========================================================= */
+
+drawDayRoute(tripDays[0]);
