@@ -1,30 +1,40 @@
 /* =========================================================
    DATOS DEL VIAJE
-   Este archivo contiene la INFORMACIÓN del viaje.
 
-   No decide cómo se ve la página.
-   No crea botones.
-   No cambia el HTML.
+   Este archivo contiene toda la información del itinerario.
 
-   Simplemente almacena los datos que después utilizará
-   app.js para construir cada día.
+   Aquí guardamos:
+   - días
+   - actividades
+   - trayectos en camper
+   - coordenadas
+   - reservas
+   - parkings
+   - información importante
+
+   app.js utilizará estos datos para construir la web.
 ========================================================= */
 
+
 const tripDays = [
-  /* DÍA 1 · MIÉRCOLES 9 */
+
+  /* =======================================================
+     DÍA 1 · MIÉRCOLES 9
+  ======================================================= */
 
   {
     id: 1,
 
-    /* Información que aparece en la navegación */
+    /* Información de la navegación */
     navDate: "MIÉ 9",
 
     /* Información principal del día */
     date: "MIÉRCOLES 9 DE SEPTIEMBRE",
+
     title: "Círculo Dorado",
 
     intro:
-      "Primer día en Islandia. Camper, paisajes volcánicos y aguas termales.",
+      "Nuestro primer día en Islandia. Camper, paisajes volcánicos y aguas termales.",
 
 
     /* -----------------------------------------------------
@@ -32,6 +42,7 @@ const tripDays = [
     ----------------------------------------------------- */
 
     stats: [
+
       {
         value: "190",
         label: "KM"
@@ -51,169 +62,590 @@ const tripDays = [
         value: "RELAX",
         label: "RITMO DEL DÍA"
       }
+
     ],
 
 
     /* -----------------------------------------------------
-       ACTIVIDADES DEL DÍA
+       ACTIVIDADES Y TRAYECTOS
+
+       type: "activity" = actividad
+       type: "drive"    = trayecto en camper
+
+       El orden dentro de este array es exactamente
+       el orden en el que aparecerán en la web.
     ----------------------------------------------------- */
 
     activities: [
-      /* Recogida camper */
+
+
+      /* ===================================================
+         ACTIVIDAD · RECOGIDA CAMPER
+      =================================================== */
+
       {
+        type: "activity",
+
         time: "12:00",
+
         icon: "🚐",
 
         category: "INICIO",
+
         title: "Recogida de la camper",
-         
-         /* Localización utilizada por el mapa */
-         location: {
-           name: "Keflavík",
-            lat: 63.9850,
-            lng: -22.6056
-         },
+
+
+        /* Localización para el mapa */
+        location: {
+
+          name: "Keflavík",
+
+          lat: 63.9850,
+
+          lng: -22.6056,
+
+          /* Más adelante pondremos el enlace real */
+          mapsUrl: "#"
+
+        },
+
+
         description:
           "Recogemos la camper, organizamos equipaje y dejamos todo listo para empezar la ruta.",
 
+
         tags: [
+
           "⏱ 1 h",
+
           "📍 Keflavík",
+
           "🟢 Sin reserva",
+
           "⚠️ Hora por confirmar"
+
+        ],
+
+
+        /* Información práctica importante */
+        important: [
+
+          "Comprobar combustible",
+
+          "Revisar calefacción y gas",
+
+          "Guardar equipaje antes de salir"
+
         ]
+
       },
 
 
-      /* Þingvellir */
+      /* ===================================================
+         TRAYECTO · KEFLAVÍK → ÞINGVELLIR
+      =================================================== */
+
       {
+        type: "drive",
+
+        icon: "🚐",
+
+        from: "Keflavík",
+
+        to: "Þingvellir",
+
+        km: 105,
+
+        minutes: 90,
+
+
+        /* Enlace real a Google Maps más adelante */
+        mapsUrl: "#",
+
+
+        /* Carreteras principales */
+        roads: [
+
+          "41",
+
+          "1",
+
+          "36"
+
+        ],
+
+
+        /*
+          Instrucciones que podremos consultar incluso
+          aunque no tengamos cobertura.
+        */
+        offlineDirections: [
+
+          "Salir de Keflavík por la carretera 41 en dirección Reykjavík.",
+
+          "Continuar hasta enlazar con la carretera 1.",
+
+          "Tomar la carretera 36 hacia Þingvellir.",
+
+          "Seguir las indicaciones del Parque Nacional."
+
+        ],
+
+
+        /* Información sobre dónde aparcar al llegar */
+        parking: {
+
+          info:
+            "Usar uno de los parkings oficiales del Parque Nacional.",
+
+          mapsUrl: "#"
+
+        }
+
+      },
+
+
+      /* ===================================================
+         ACTIVIDAD · ÞINGVELLIR
+      =================================================== */
+
+      {
+        type: "activity",
+
         time: "14:00",
+
         icon: "🌋",
 
         category: "PARQUE NACIONAL",
+
         title: "Þingvellir",
-        
-         /* Localización utilizada por el mapa */
-         location: {
-            name: "Þingvellir",
-            lat: 64.2559,
-            lng: -21.1300
-         },
-         
+
+
+        location: {
+
+          name: "Þingvellir",
+
+          lat: 64.2559,
+
+          lng: -21.1300,
+
+          mapsUrl: "#"
+
+        },
+
+
         description:
           "Primera parada del viaje y paseo por una de las zonas geológicas más importantes de Islandia.",
 
+
         tags: [
+
           "⏱ 1 h 30",
+
           "🥾 Fácil",
+
           "📸 Muy top"
+
         ],
 
-        actions: [
-          {
-            text: "📍 Maps",
-            url: "#"
-          },
 
-          {
-            text: "ℹ️ Detalles",
-            url: "#"
-          }
+        parking: {
+
+          info:
+            "Parking oficial del Parque Nacional.",
+
+          mapsUrl: "#"
+
+        },
+
+
+        important: [
+
+          "Llevar cortavientos",
+
+          "Hay senderos fáciles",
+
+          "Conviene tener calzado impermeable"
+
         ]
+
       },
 
 
-      /* Geysir */
+      /* ===================================================
+         TRAYECTO · ÞINGVELLIR → GEYSIR
+      =================================================== */
+
       {
+        type: "drive",
+
+        icon: "🚐",
+
+        from: "Þingvellir",
+
+        to: "Geysir",
+
+        km: 60,
+
+        minutes: 50,
+
+        mapsUrl: "#",
+
+
+        roads: [
+
+          "36",
+
+          "365",
+
+          "37",
+
+          "35"
+
+        ],
+
+
+        offlineDirections: [
+
+          "Salir de Þingvellir por la carretera 36.",
+
+          "Continuar por la 365.",
+
+          "Seguir hacia Laugarvatn.",
+
+          "Tomar la carretera 37.",
+
+          "Continuar por la carretera 35 hasta Geysir."
+
+        ],
+
+
+        parking: {
+
+          info:
+            "Parking junto al área de visitantes de Geysir.",
+
+          mapsUrl: "#"
+
+        }
+
+      },
+
+
+      /* ===================================================
+         ACTIVIDAD · GEYSIR
+      =================================================== */
+
+      {
+        type: "activity",
+
         time: "16:30",
+
         icon: "💦",
 
         category: "GEOTERMIA",
+
         title: "Geysir",
+
+
+        location: {
+
+          name: "Geysir",
+
+          lat: 64.3104,
+
+          lng: -20.3024,
+
+          mapsUrl: "#"
+
+        },
+
 
         description:
           "Parada breve en la zona geotérmica para ver Strokkur en erupción.",
 
+
         tags: [
+
           "⏱ 45 min",
+
           "🟢 Sin reserva"
-        ]
+
+        ],
+
+
+        parking: {
+
+          info:
+            "Parking junto al centro de visitantes.",
+
+          mapsUrl: "#"
+
+        }
+
       },
 
 
-      /* Gullfoss */
+      /* ===================================================
+         TRAYECTO · GEYSIR → GULLFOSS
+      =================================================== */
+
       {
+        type: "drive",
+
+        icon: "🚐",
+
+        from: "Geysir",
+
+        to: "Gullfoss",
+
+        km: 10,
+
+        minutes: 10,
+
+        mapsUrl: "#",
+
+
+        roads: [
+
+          "35"
+
+        ],
+
+
+        offlineDirections: [
+
+          "Salir de Geysir por la carretera 35.",
+
+          "Continuar aproximadamente 10 km.",
+
+          "Seguir las indicaciones hacia Gullfoss."
+
+        ],
+
+
+        parking: {
+
+          info:
+            "Parking principal de Gullfoss.",
+
+          mapsUrl: "#"
+
+        }
+
+      },
+
+
+      /* ===================================================
+         ACTIVIDAD · GULLFOSS
+      =================================================== */
+
+      {
+        type: "activity",
+
         time: "18:00",
+
         icon: "🌊",
 
         category: "CASCADA",
+
         title: "Gullfoss",
-         
-         /* Localización utilizada por el mapa */
-         location: {
-            name: "Gullfoss",
-            lat: 64.3271,
-            lng: -20.1199
-         },
-         
+
+
+        location: {
+
+          name: "Gullfoss",
+
+          lat: 64.3271,
+
+          lng: -20.1199,
+
+          mapsUrl: "#"
+
+        },
+
+
         description:
           "Una de las cascadas más famosas del país y última gran parada del Círculo Dorado.",
 
+
         tags: [
+
           "⏱ 1 h",
+
           "📸 Top"
+
+        ],
+
+
+        parking: {
+
+          info:
+            "Parking principal junto al centro de visitantes.",
+
+          mapsUrl: "#"
+
+        },
+
+
+        important: [
+
+          "Puede haber bastante viento",
+
+          "El suelo puede estar mojado",
+
+          "Llevar impermeable"
+
         ]
+
       },
 
 
-      /* Secret Lagoon */
+      /* ===================================================
+         TRAYECTO · GULLFOSS → SECRET LAGOON
+      =================================================== */
+
       {
+        type: "drive",
+
+        icon: "🚐",
+
+        from: "Gullfoss",
+
+        to: "Secret Lagoon",
+
+        km: 32,
+
+        minutes: 30,
+
+        mapsUrl: "#",
+
+
+        roads: [
+
+          "35",
+
+          "30"
+
+        ],
+
+
+        offlineDirections: [
+
+          "Salir de Gullfoss por la carretera 35.",
+
+          "Continuar hacia Flúðir.",
+
+          "Tomar la carretera 30.",
+
+          "Seguir las indicaciones hacia Secret Lagoon."
+
+        ],
+
+
+        parking: {
+
+          info:
+            "Parking en el propio recinto.",
+
+          mapsUrl: "#"
+
+        }
+
+      },
+
+
+      /* ===================================================
+         ACTIVIDAD · SECRET LAGOON
+      =================================================== */
+
+      {
+        type: "activity",
+
         time: "20:00",
+
         icon: "♨️",
 
         category: "RELAX",
+
         title: "Secret Lagoon",
-         /* Localización utilizada por el mapa */
-         location: {
-            name: "Secret Lagoon",
-            lat: 64.1377,
-            lng: -20.3097
-  },
+
+
+        location: {
+
+          name: "Secret Lagoon",
+
+          lat: 64.1377,
+
+          lng: -20.3097,
+
+          mapsUrl: "#"
+
+        },
+
 
         description:
           "Terminamos el día bañándonos en aguas termales antes de ir al camping.",
 
+
         tags: [
+
           "⏱ 1 h 30",
+
           "🟠 Mejor reservar"
+
         ],
 
-        /* Hace que esta tarjeta tenga un estilo especial */
+
+        /*
+          Esta propiedad hace que la tarjeta
+          aparezca visualmente destacada.
+        */
         featured: true,
 
-        actions: [
-          {
-            text: "🎟 Reservar",
-            url: "#",
-            primary: true
-          },
 
-          {
-            text: "📍 Maps",
-            url: "#"
-          }
+        /* Información de reserva */
+        booking: {
+
+          status: "recommended",
+
+          advice:
+            "Mejor reservar si vemos que quedan pocas plazas.",
+
+          url: "#"
+
+        },
+
+
+        parking: {
+
+          info:
+            "Parking gratuito en el recinto.",
+
+          mapsUrl: "#"
+
+        },
+
+
+        important: [
+
+          "Llevar bañador",
+
+          "Llevar toalla",
+
+          "Revisar horario de última entrada"
+
         ]
+
       }
 
     ]
+
   },
 
 
   /* =======================================================
      DÍA 2 · JUEVES 10
-
-     De momento lo dejamos casi vacío.
-     Después meteremos el itinerario real.
   ======================================================= */
 
   {
@@ -228,14 +660,20 @@ const tripDays = [
     intro:
       "Cascadas, costa sur y nuestra primera experiencia sobre el hielo.",
 
+
+    /*
+      Lo completaremos cuando trabajemos
+      específicamente el Día 2.
+    */
     stats: [],
 
     activities: []
+
   },
 
 
   /* =======================================================
-     DÍA 3
+     DÍA 3 · VIERNES 11
   ======================================================= */
 
   {
@@ -253,11 +691,12 @@ const tripDays = [
     stats: [],
 
     activities: []
+
   },
 
 
   /* =======================================================
-     DÍA 4
+     DÍA 4 · SÁBADO 12
   ======================================================= */
 
   {
@@ -269,16 +708,18 @@ const tripDays = [
 
     title: "Islandia",
 
-    intro: "Día 4 del viaje.",
+    intro:
+      "Día 4 del viaje.",
 
     stats: [],
 
     activities: []
+
   },
 
 
   /* =======================================================
-     DÍA 5
+     DÍA 5 · DOMINGO 13
   ======================================================= */
 
   {
@@ -290,16 +731,18 @@ const tripDays = [
 
     title: "Islandia",
 
-    intro: "Día 5 del viaje.",
+    intro:
+      "Día 5 del viaje.",
 
     stats: [],
 
     activities: []
+
   },
 
 
   /* =======================================================
-     DÍA 6
+     DÍA 6 · LUNES 14
   ======================================================= */
 
   {
@@ -311,11 +754,25 @@ const tripDays = [
 
     title: "Último día",
 
-    intro: "Últimas horas en Islandia.",
+    intro:
+      "Últimas horas en Islandia.",
 
     stats: [],
 
     activities: []
+
   }
 
 ];
+
+
+/* =========================================================
+   PRUEBA
+
+   Podemos ver este mensaje en la consola para comprobar
+   que data.js se ha cargado correctamente.
+========================================================= */
+
+console.log("✅ data.js cargado correctamente");
+
+console.log("Datos del viaje:", tripDays);
