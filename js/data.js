@@ -173,6 +173,12 @@ const tripDays = [
 
         category: "RELAX",
         title: "Secret Lagoon",
+         /* Localización utilizada por el mapa */
+         location: {
+            name: "Secret Lagoon",
+            lat: 64.1377,
+            lng: -20.3097
+  },
 
         description:
           "Terminamos el día bañándonos en aguas termales antes de ir al camping.",
