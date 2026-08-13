@@ -238,48 +238,60 @@ mapFilterButtons.forEach(button => {
     button.classList.add("active");
 
 
-    /*
-      Leemos el valor que guardamos
-      en data-map-filter.
-    */
-    const filter = button.dataset.mapFilter;
+    /* Leemos qué filtro se ha pulsado */
+const filter = button.dataset.mapFilter;
 
 
-    /*
-      TODO
-    */
-    if (filter === "all") {
+/* =====================================================
+   TODO EL VIAJE
+===================================================== */
 
-      drawAllRoutes();
+if (filter === "all") {
 
-      return;
-    }
+  drawAllRoutes();
 
-
-    /*
-      Convertimos, por ejemplo:
-
-      "2" → 2
-
-      porque los atributos HTML son texto.
-    */
-    const dayId = Number(filter);
+  return;
+}
 
 
-    /*
-      Buscamos el día correspondiente.
-    */
-    const selectedDay =
-      tripDays.find(day => day.id === dayId);
+/* =====================================================
+   CAMPINGS
+===================================================== */
+
+if (filter === "campings") {
+
+  drawCampings();
+
+  return;
+}
 
 
-    /*
-      Si existe, lo dibujamos.
-    */
-    if (selectedDay) {
-      drawDayRoute(selectedDay);
-    }
+/* =====================================================
+   SUPERMERCADOS
+===================================================== */
 
+if (filter === "supermarkets") {
+
+  drawSupermarkets();
+
+  return;
+}
+
+
+/* =====================================================
+   DÍAS 1–6
+===================================================== */
+
+const dayId = Number(filter);
+
+
+const selectedDay =
+  tripDays.find(day => day.id === dayId);
+
+
+if (selectedDay) {
+  drawDayRoute(selectedDay);
+}
   });
 
 });
@@ -407,3 +419,133 @@ mapFilterButtons.forEach(button => {
 ========================================================= */
 
 drawAllRoutes();
+
+/* =========================================================
+   DIBUJAR CAMPINGS
+========================================================= */
+
+function drawCampings() {
+
+  /* Limpiamos cualquier ruta o marcador anterior */
+  routeLayer.clearLayers();
+
+
+  /* Guardamos coordenadas para poder encuadrar el mapa */
+  const coordinates = [];
+
+
+  campsites.forEach(camping => {
+
+    const point = [
+      camping.location.lat,
+      camping.location.lng
+    ];
+
+
+    coordinates.push(point);
+
+
+    const marker = L.marker(point);
+
+
+    marker.bindPopup(`
+
+      <strong>
+        ⛺ ${camping.name}
+      </strong>
+
+      <br><br>
+
+      ${camping.description}
+
+      <br><br>
+
+      ${(camping.tags || []).join("<br>")}
+
+    `);
+
+
+    marker.addTo(routeLayer);
+
+  });
+
+
+  /* Ajustamos el mapa a todos los campings */
+  if (coordinates.length > 0) {
+
+    map.fitBounds(
+      coordinates,
+      {
+        padding: [60, 60],
+        maxZoom: 11
+      }
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   DIBUJAR SUPERMERCADOS
+========================================================= */
+
+function drawSupermarkets() {
+
+  /* Limpiamos lo que hubiera antes */
+  routeLayer.clearLayers();
+
+
+  const coordinates = [];
+
+
+  supermarkets.forEach(supermarket => {
+
+    const point = [
+      supermarket.location.lat,
+      supermarket.location.lng
+    ];
+
+
+    coordinates.push(point);
+
+
+    const marker = L.marker(point);
+
+
+    marker.bindPopup(`
+
+      <strong>
+        🛒 ${supermarket.name}
+      </strong>
+
+      <br><br>
+
+      ${supermarket.description}
+
+      <br><br>
+
+      ${(supermarket.tags || []).join("<br>")}
+
+    `);
+
+
+    marker.addTo(routeLayer);
+
+  });
+
+
+  /* Ajustamos el mapa a los supermercados */
+  if (coordinates.length > 0) {
+
+    map.fitBounds(
+      coordinates,
+      {
+        padding: [60, 60],
+        maxZoom: 11
+      }
+    );
+
+  }
+
+}
