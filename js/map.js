@@ -73,6 +73,12 @@ L.tileLayer(
 
 const routeLayer = L.layerGroup().addTo(map);
 
+/* =========================================================
+   BOTONES DE FILTRO DEL MAPA
+========================================================= */
+
+const mapFilterButtons =
+  document.querySelectorAll(".map-filter");
 
 /* =========================================================
    DIBUJAR UN DÍA EN EL MAPA
@@ -82,7 +88,201 @@ function drawDayRoute(day) {
   routeLayer.clearLayers();
   const routeCoordinates = [];
 
+/* =========================================================
+   DIBUJAR TODO EL VIAJE
+========================================================= */
 
+function drawAllRoutes() {
+
+  /*
+    Limpiamos primero todo lo que hubiera
+    dibujado anteriormente.
+  */
+  routeLayer.clearLayers();
+
+
+  /*
+    Guardaremos aquí TODAS las coordenadas
+    del viaje para después encuadrar el mapa.
+  */
+  const allCoordinates = [];
+
+
+  /*
+    Recorremos cada día.
+  */
+  tripDays.forEach(day => {
+
+    /*
+      Coordenadas correspondientes solamente
+      a este día.
+    */
+    const dayCoordinates = [];
+
+
+    /*
+      Recorremos las actividades del día.
+    */
+    day.activities.forEach(activity => {
+
+      /*
+        Si no tiene localización,
+        no puede aparecer en el mapa.
+      */
+      if (!activity.location) {
+        return;
+      }
+
+
+      const coordinates = [
+        activity.location.lat,
+        activity.location.lng
+      ];
+
+
+      /*
+        Guardamos la coordenada tanto en:
+        - la ruta del día
+        - la ruta global
+      */
+      dayCoordinates.push(coordinates);
+      allCoordinates.push(coordinates);
+
+
+      /*
+        Creamos el marcador.
+      */
+      const marker = L.marker(coordinates);
+
+
+      marker.bindPopup(`
+
+        <strong>
+          ${activity.icon} ${activity.title}
+        </strong>
+
+        <br>
+
+        Día ${day.id}
+
+        <br>
+
+        ${activity.location.name}
+
+      `);
+
+
+      marker.addTo(routeLayer);
+
+    });
+
+
+    /*
+      Dibujamos una línea independiente
+      para cada día.
+
+      Así NO conectamos artificialmente
+      el final del Día 1 con el inicio del Día 2.
+    */
+    if (dayCoordinates.length >= 2) {
+
+      L.polyline(
+        dayCoordinates,
+        {
+          weight: 4,
+          opacity: 0.65
+        }
+      ).addTo(routeLayer);
+
+    }
+
+  });
+
+
+  /*
+    Ajustamos el mapa para que entren
+    todos los puntos del viaje.
+  */
+  if (allCoordinates.length > 0) {
+
+    map.fitBounds(
+      allCoordinates,
+      {
+        padding: [50, 50]
+      }
+    );
+
+  }
+
+}
+   /* =========================================================
+   EVENTOS DE LOS FILTROS
+========================================================= */
+
+mapFilterButtons.forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    /*
+      Quitamos el estado activo
+      de todos los filtros.
+    */
+    mapFilterButtons.forEach(filterButton => {
+      filterButton.classList.remove("active");
+    });
+
+
+    /*
+      Marcamos como activo el botón pulsado.
+    */
+    button.classList.add("active");
+
+
+    /*
+      Leemos el valor que guardamos
+      en data-map-filter.
+    */
+    const filter = button.dataset.mapFilter;
+
+
+    /*
+      TODO
+    */
+    if (filter === "all") {
+
+      drawAllRoutes();
+
+      return;
+    }
+
+
+    /*
+      Convertimos, por ejemplo:
+
+      "2" → 2
+
+      porque los atributos HTML son texto.
+    */
+    const dayId = Number(filter);
+
+
+    /*
+      Buscamos el día correspondiente.
+    */
+    const selectedDay =
+      tripDays.find(day => day.id === dayId);
+
+
+    /*
+      Si existe, lo dibujamos.
+    */
+    if (selectedDay) {
+      drawDayRoute(selectedDay);
+    }
+
+  });
+
+});
   /* =======================================================
      RECORRER TODAS LAS ACTIVIDADES
   ======================================================= */
@@ -200,4 +400,11 @@ function drawDayRoute(day) {
    Después crearemos los botones:
    TODO · DÍA 1 · DÍA 2 · ...
 ========================================================= */
-drawDayRoute(tripDays[0]);
+/* =========================================================
+   MAPA INICIAL
+
+   Al entrar por primera vez mostramos
+   todo el viaje.
+========================================================= */
+
+drawAllRoutes();
