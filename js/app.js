@@ -335,7 +335,6 @@ mapButton.addEventListener("click", () => {
   /* Mostramos la sección del mapa */
   mapSection.classList.remove("hidden");
 
-
   /*
     Esperamos un instante para que el navegador
     termine de mostrar físicamente el contenedor.
