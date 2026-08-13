@@ -332,7 +332,23 @@ mapButton.addEventListener("click", () => {
   content.classList.add("hidden");
 
 
-  /* Mostramos el mapa */
+  /* Mostramos la sección del mapa */
   mapSection.classList.remove("hidden");
+
+
+  /*
+    IMPORTANTE:
+
+    Leaflet se creó cuando el mapa estaba oculto.
+
+    Por eso al mostrarlo puede calcular mal
+    el tamaño del contenedor.
+
+    invalidateSize() obliga a Leaflet a
+    volver a medir el mapa.
+  */
+  setTimeout(() => {
+    map.invalidateSize();
+  }, 100);
 
 });
