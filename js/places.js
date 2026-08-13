@@ -1,14 +1,18 @@
 /* =========================================================
    PUNTOS ÚTILES DEL VIAJE
-   Aquí guardaremos:
-   - campings
-   - supermercados
 
-   Más adelante también podremos añadir:
-   - gasolineras
-   - piscinas
-   - duchas
-   - talleres
+   Este archivo contiene lugares que no forman parte
+   directamente del itinerario de cada día.
+
+   De momento:
+   - Campings
+   - Supermercados
+
+   Más adelante:
+   - Gasolineras
+   - Piscinas
+   - Duchas
+   - Talleres
 ========================================================= */
 
 
@@ -27,11 +31,11 @@ const campsites = [
     },
 
     description:
-      "Camping útil para dormir tras el Círculo Dorado.",
+      "Camping útil para dormir después del Círculo Dorado.",
 
     tags: [
-      "🚿 Duchas",
       "🚐 Camper",
+      "🚿 Duchas",
       "📍 Hella"
     ]
   }
@@ -54,7 +58,7 @@ const supermarkets = [
     },
 
     description:
-      "Supermercado económico y práctico para comprar comida.",
+      "Supermercado práctico para hacer una compra grande durante la ruta.",
 
     tags: [
       "🛒 Compra grande",
@@ -64,3 +68,16 @@ const supermarkets = [
   }
 
 ];
+
+
+/* =========================================================
+   PRUEBA
+
+   Esto aparecerá en la consola y nos permitirá
+   comprobar que places.js se ha cargado.
+========================================================= */
+
+console.log("✅ places.js cargado");
+
+console.log("Campings:", campsites);
+console.log("Supermercados:", supermarkets);
