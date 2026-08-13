@@ -1,6 +1,5 @@
 /* =========================================================
    MAPA GENERAL DEL VIAJE
-
    Este archivo se encarga únicamente del mapa.
 
    Leaflet = librería que dibuja el mapa
