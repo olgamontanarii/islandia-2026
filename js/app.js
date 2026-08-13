@@ -37,7 +37,7 @@ const mapSection = document.querySelector("#map-section");
 function renderDay(day) {
 
   /* -------------------------------------------------------
-     ESTADÍSTICAS
+     ESTADÍSTICAS DEL DÍA
   ------------------------------------------------------- */
 
   const statsHTML = (day.stats || [])
@@ -51,11 +51,31 @@ function renderDay(day) {
 
 
   /* -------------------------------------------------------
-     ACTIVIDADES
+     ACTIVIDADES + TRAYECTOS
+
+     Aquí distinguimos entre:
+     - type: "activity"
+     - type: "drive"
   ------------------------------------------------------- */
 
-  const activitiesHTML = (day.activities || [])
-    .map(activity => createActivityHTML(activity))
+  const timelineHTML = (day.activities || [])
+    .map(item => {
+
+      /*
+        Si es un trayecto en camper,
+        utilizamos el diseño de trayecto.
+      */
+      if (item.type === "drive") {
+        return createDriveHTML(item);
+      }
+
+
+      /*
+        Si no es drive, lo tratamos como actividad.
+      */
+      return createActivityHTML(item);
+
+    })
     .join("");
 
 
@@ -114,7 +134,7 @@ function renderDay(day) {
 
 
     <!-- =====================================
-         TIMELINE
+         TIMELINE DEL DÍA
     ====================================== -->
 
     <section class="timeline-section">
@@ -135,7 +155,7 @@ function renderDay(day) {
       <div class="timeline">
 
         ${
-          activitiesHTML ||
+          timelineHTML ||
           `
             <div class="empty-day">
               Todavía no hemos añadido actividades para este día.
@@ -169,21 +189,102 @@ function createActivityHTML(activity) {
 
 
   /* -------------------------------------------------------
-     BOTONES
+     INFORMACIÓN IMPORTANTE
   ------------------------------------------------------- */
 
-  const actionsHTML = (activity.actions || [])
-    .map(action => `
-
-      <a
-        href="${action.url}"
-        class="action-link ${action.primary ? "primary" : ""}"
-      >
-        ${action.text}
-      </a>
-
+  const importantHTML = (activity.important || [])
+    .map(item => `
+      <li>${item}</li>
     `)
     .join("");
+
+
+  /* -------------------------------------------------------
+     PARKING
+  ------------------------------------------------------- */
+
+  const parkingHTML = activity.parking
+    ? `
+      <div class="activity-extra">
+
+        <strong>🅿️ Parking</strong>
+
+        <p>
+          ${activity.parking.info}
+        </p>
+
+        ${
+          activity.parking.mapsUrl &&
+          activity.parking.mapsUrl !== "#"
+            ? `
+              <a
+                href="${activity.parking.mapsUrl}"
+                class="action-link"
+                target="_blank"
+              >
+                📍 Abrir parking
+              </a>
+            `
+            : ""
+        }
+
+      </div>
+    `
+    : "";
+
+
+  /* -------------------------------------------------------
+     RESERVA
+  ------------------------------------------------------- */
+
+  const bookingHTML = activity.booking
+    ? `
+      <div class="activity-extra">
+
+        <strong>🎟 Reserva</strong>
+
+        <p>
+          ${activity.booking.advice || ""}
+        </p>
+
+        ${
+          activity.booking.url &&
+          activity.booking.url !== "#"
+            ? `
+              <a
+                href="${activity.booking.url}"
+                class="action-link primary"
+                target="_blank"
+              >
+                🎟 Reservar
+              </a>
+            `
+            : ""
+        }
+
+      </div>
+    `
+    : "";
+
+
+  /* -------------------------------------------------------
+     BOTÓN MAPS
+  ------------------------------------------------------- */
+
+  const mapsHTML =
+    activity.location &&
+    activity.location.mapsUrl &&
+    activity.location.mapsUrl !== "#"
+      ? `
+        <a
+          href="${activity.location.mapsUrl}"
+          class="action-link"
+          target="_blank"
+        >
+          📍 Maps
+        </a>
+      `
+      : "";
 
 
   /* -------------------------------------------------------
@@ -250,11 +351,40 @@ function createActivityHTML(activity) {
         }
 
 
+        <!-- BOTONES PRINCIPALES -->
         ${
-          actionsHTML
+          mapsHTML
             ? `
               <div class="activity-actions">
-                ${actionsHTML}
+                ${mapsHTML}
+              </div>
+            `
+            : ""
+        }
+
+
+        <!-- PARKING -->
+        ${parkingHTML}
+
+
+        <!-- RESERVA -->
+        ${bookingHTML}
+
+
+        <!-- INFORMACIÓN IMPORTANTE -->
+        ${
+          importantHTML
+            ? `
+              <div class="activity-extra">
+
+                <strong>
+                  ℹ️ Importante
+                </strong>
+
+                <ul>
+                  ${importantHTML}
+                </ul>
+
               </div>
             `
             : ""
@@ -269,18 +399,259 @@ function createActivityHTML(activity) {
 
 
 /* =========================================================
-   CAMBIAR EL DÍA ACTIVO EN LA NAVEGACIÓN
+   CREAR HTML DE UN TRAYECTO EN CAMPER
+========================================================= */
+
+function createDriveHTML(drive) {
+
+  /* -------------------------------------------------------
+     CARRETERAS
+  ------------------------------------------------------- */
+
+  const roadsHTML = (drive.roads || [])
+    .map(road => `
+      <span class="road-number">
+        ${road}
+      </span>
+    `)
+    .join("");
+
+
+  /* -------------------------------------------------------
+     INSTRUCCIONES OFFLINE
+  ------------------------------------------------------- */
+
+  const directionsHTML = (drive.offlineDirections || [])
+    .map((direction, index) => `
+      <li>
+        <strong>${index + 1}.</strong>
+        ${direction}
+      </li>
+    `)
+    .join("");
+
+
+  /* -------------------------------------------------------
+     MAPS
+  ------------------------------------------------------- */
+
+  const mapsHTML =
+    drive.mapsUrl &&
+    drive.mapsUrl !== "#"
+      ? `
+        <a
+          href="${drive.mapsUrl}"
+          class="drive-action"
+          target="_blank"
+        >
+          📍 Abrir ruta en Maps
+        </a>
+      `
+      : "";
+
+
+  /* -------------------------------------------------------
+     PARKING AL LLEGAR
+  ------------------------------------------------------- */
+
+  const parkingHTML = drive.parking
+    ? `
+      <div class="drive-parking">
+
+        <strong>
+          🅿️ Al llegar
+        </strong>
+
+        <span>
+          ${drive.parking.info}
+        </span>
+
+      </div>
+    `
+    : "";
+
+
+  /* -------------------------------------------------------
+     TRAYECTO COMPLETO
+  ------------------------------------------------------- */
+
+  return `
+
+    <article class="drive">
+
+      <!-- Línea visual izquierda -->
+      <div class="drive-line">
+
+        <span class="drive-icon">
+          🚐
+        </span>
+
+      </div>
+
+
+      <!-- Contenido -->
+      <div class="drive-card">
+
+        <p class="drive-label">
+          TRAYECTO EN CAMPER
+        </p>
+
+
+        <h4>
+          ${drive.from}
+          <span>→</span>
+          ${drive.to}
+        </h4>
+
+
+        <!-- DATOS PRINCIPALES -->
+        <div class="drive-stats">
+
+          <span>
+            🛣️ ${drive.km} km
+          </span>
+
+          <span>
+            ⏱️ ${formatMinutes(drive.minutes)}
+          </span>
+
+        </div>
+
+
+        <!-- CARRETERAS -->
+        ${
+          roadsHTML
+            ? `
+              <div class="drive-roads">
+
+                <strong>
+                  Carreteras
+                </strong>
+
+                <div>
+                  ${roadsHTML}
+                </div>
+
+              </div>
+            `
+            : ""
+        }
+
+
+        <!-- PARKING -->
+        ${parkingHTML}
+
+
+        <!-- BOTONES -->
+        <div class="drive-actions">
+
+          ${mapsHTML}
+
+
+          ${
+            directionsHTML
+              ? `
+                <button
+                  class="drive-action offline-route-button"
+                  type="button"
+                >
+                  🧭 Ruta sin conexión
+                </button>
+              `
+              : ""
+          }
+
+        </div>
+
+
+        <!-- INSTRUCCIONES OFFLINE
+             Ocultas por defecto -->
+        ${
+          directionsHTML
+            ? `
+              <div class="offline-route hidden">
+
+                <div class="offline-route-header">
+
+                  <strong>
+                    🧭 Cómo llegar sin conexión
+                  </strong>
+
+                  <span>
+                    ${drive.from} → ${drive.to}
+                  </span>
+
+                </div>
+
+
+                <ol>
+                  ${directionsHTML}
+                </ol>
+
+              </div>
+            `
+            : ""
+        }
+
+      </div>
+
+    </article>
+
+  `;
+}
+
+
+/* =========================================================
+   CONVERTIR MINUTOS EN "1 h 30 min"
+========================================================= */
+
+function formatMinutes(minutes) {
+
+  const hours =
+    Math.floor(minutes / 60);
+
+
+  const remainingMinutes =
+    minutes % 60;
+
+
+  /*
+    Menos de una hora:
+    30 → "30 min"
+  */
+  if (hours === 0) {
+    return `${remainingMinutes} min`;
+  }
+
+
+  /*
+    Hora exacta:
+    60 → "1 h"
+  */
+  if (remainingMinutes === 0) {
+    return `${hours} h`;
+  }
+
+
+  /*
+    Hora + minutos:
+    90 → "1 h 30 min"
+  */
+  return `${hours} h ${remainingMinutes} min`;
+}
+
+
+/* =========================================================
+   CAMBIAR EL DÍA ACTIVO
 ========================================================= */
 
 function setActiveDay(selectedButton) {
 
-  /* Quitamos active de todos */
   dayButtons.forEach(button => {
     button.classList.remove("active");
   });
 
 
-  /* Activamos el botón seleccionado */
   selectedButton.classList.add("active");
 }
 
@@ -294,18 +665,16 @@ dayButtons.forEach((button, index) => {
   button.addEventListener("click", () => {
 
     /*
-      El botón MAPA también tiene clase .day.
-
-      Si es MAPA, este bloque no hace nada,
-      porque tiene su propio evento más abajo.
+      MAPA tiene también clase .day.
+      Lo ignoramos aquí.
     */
     if (button.classList.contains("map-tab")) {
       return;
     }
 
 
-    /* Día correspondiente */
-    const selectedDay = tripDays[index];
+    const selectedDay =
+      tripDays[index];
 
 
     if (!selectedDay) {
@@ -313,7 +682,6 @@ dayButtons.forEach((button, index) => {
     }
 
 
-    /* Activamos visualmente el día */
     setActiveDay(button);
 
 
@@ -325,7 +693,6 @@ dayButtons.forEach((button, index) => {
     content.classList.remove("hidden");
 
 
-    /* Dibujamos el día */
     renderDay(selectedDay);
 
   });
@@ -334,16 +701,11 @@ dayButtons.forEach((button, index) => {
 
 
 /* =========================================================
-   ABRIR EL MAPA DIRECTAMENTE DESDE UN DÍA
-
-   Ejemplo:
-   Día 1 → "Ver ruta del día"
-   abre MAPA con DÍA 1 seleccionado
+   ABRIR MAPA DESDE UN DÍA
 ========================================================= */
 
 function openDayMap(dayId) {
 
-  /* Buscamos el día */
   const selectedDay =
     tripDays.find(day => day.id === dayId);
 
@@ -353,10 +715,7 @@ function openDayMap(dayId) {
   }
 
 
-  /* -------------------------------------------------------
-     NAVEGACIÓN SUPERIOR
-  ------------------------------------------------------- */
-
+  /* Navegación superior */
   dayButtons.forEach(button => {
     button.classList.remove("active");
   });
@@ -365,19 +724,13 @@ function openDayMap(dayId) {
   mapButton.classList.add("active");
 
 
-  /* -------------------------------------------------------
-     MOSTRAR MAPA
-  ------------------------------------------------------- */
-
+  /* Mostrar mapa */
   content.classList.add("hidden");
 
   mapSection.classList.remove("hidden");
 
 
-  /* -------------------------------------------------------
-     FILTROS INTERNOS DEL MAPA
-  ------------------------------------------------------- */
-
+  /* Filtros del mapa */
   const mapFilterButtons =
     document.querySelectorAll(".map-filter");
 
@@ -387,12 +740,6 @@ function openDayMap(dayId) {
   });
 
 
-  /*
-    Buscamos:
-    data-map-filter="1"
-    data-map-filter="2"
-    etc.
-  */
   const selectedFilter =
     document.querySelector(
       `.map-filter[data-map-filter="${dayId}"]`
@@ -404,22 +751,10 @@ function openDayMap(dayId) {
   }
 
 
-  /* -------------------------------------------------------
-     DIBUJAR RUTA
-  ------------------------------------------------------- */
-
   setTimeout(() => {
 
-    /*
-      Leaflet recalcula el tamaño porque
-      el mapa acaba de pasar de oculto a visible.
-    */
     map.invalidateSize();
 
-
-    /*
-      Mostramos solamente la ruta del día.
-    */
     drawDayRoute(selectedDay);
 
   }, 150);
@@ -428,20 +763,12 @@ function openDayMap(dayId) {
 
 
 /* =========================================================
-   BOTÓN SUPERIOR "MAPA"
-
-   Al pulsarlo:
-   - abre el mapa
-   - marca TODO
-   - muestra todas las rutas
+   BOTÓN SUPERIOR MAPA
 ========================================================= */
 
 mapButton.addEventListener("click", () => {
 
-  /* -------------------------------------------------------
-     NAVEGACIÓN SUPERIOR
-  ------------------------------------------------------- */
-
+  /* Navegación */
   dayButtons.forEach(button => {
     button.classList.remove("active");
   });
@@ -450,19 +777,13 @@ mapButton.addEventListener("click", () => {
   mapButton.classList.add("active");
 
 
-  /* -------------------------------------------------------
-     MOSTRAR MAPA
-  ------------------------------------------------------- */
-
+  /* Mostrar mapa */
   content.classList.add("hidden");
 
   mapSection.classList.remove("hidden");
 
 
-  /* -------------------------------------------------------
-     ACTIVAR FILTRO TODO
-  ------------------------------------------------------- */
-
+  /* Activar filtro TODO */
   const mapFilters =
     document.querySelectorAll(".map-filter");
 
@@ -483,22 +804,10 @@ mapButton.addEventListener("click", () => {
   }
 
 
-  /* -------------------------------------------------------
-     REDIBUJAR MAPA
-  ------------------------------------------------------- */
-
   setTimeout(() => {
 
-    /*
-      Corrige el tamaño de Leaflet después
-      de mostrar el contenedor.
-    */
     map.invalidateSize();
 
-
-    /*
-      MAPA general = todas las rutas.
-    */
     drawAllRoutes();
 
   }, 150);
@@ -507,37 +816,93 @@ mapButton.addEventListener("click", () => {
 
 
 /* =========================================================
-   BOTÓN "VER RUTA DEL DÍA"
+   CLICS DINÁMICOS DENTRO DEL ITINERARIO
 
-   El botón se crea dinámicamente dentro de renderDay(),
-   por eso usamos delegación de eventos.
+   Aquí controlamos:
+   - Ver ruta del día
+   - Ruta sin conexión
 ========================================================= */
 
 content.addEventListener("click", event => {
 
-  /*
-    Buscamos si el clic ocurrió dentro
-    de un botón .day-route-button.
-  */
+  /* -------------------------------------------------------
+     VER RUTA DEL DÍA
+  ------------------------------------------------------- */
+
   const routeButton =
     event.target.closest(".day-route-button");
 
 
-  if (!routeButton) {
+  if (routeButton) {
+
+    const dayId =
+      Number(routeButton.dataset.day);
+
+
+    openDayMap(dayId);
+
     return;
   }
 
 
-  /*
-    data-day llega como texto.
+  /* -------------------------------------------------------
+     ABRIR / CERRAR RUTA OFFLINE
+  ------------------------------------------------------- */
 
-    "1" → 1
-  */
-  const dayId =
-    Number(routeButton.dataset.day);
+  const offlineButton =
+    event.target.closest(".offline-route-button");
 
 
-  openDayMap(dayId);
+  if (offlineButton) {
+
+    /*
+      Buscamos la tarjeta de trayecto donde
+      está el botón que acabamos de pulsar.
+    */
+    const driveCard =
+      offlineButton.closest(".drive-card");
+
+
+    if (!driveCard) {
+      return;
+    }
+
+
+    /*
+      Dentro de esa misma tarjeta buscamos
+      las instrucciones offline.
+    */
+    const offlineRoute =
+      driveCard.querySelector(".offline-route");
+
+
+    if (!offlineRoute) {
+      return;
+    }
+
+
+    /*
+      Mostrar / ocultar.
+    */
+    offlineRoute.classList.toggle("hidden");
+
+
+    /*
+      Cambiamos el texto del botón.
+    */
+    if (offlineRoute.classList.contains("hidden")) {
+
+      offlineButton.textContent =
+        "🧭 Ruta sin conexión";
+
+    } else {
+
+      offlineButton.textContent =
+        "✕ Cerrar instrucciones";
+
+    }
+
+  }
 
 });
 
@@ -546,10 +911,4 @@ content.addEventListener("click", event => {
    CARGA INICIAL
 ========================================================= */
 
-/*
-  Siempre generamos el Día 1 desde data.js.
-
-  Así index.html no necesita contener
-  manualmente todo el itinerario.
-*/
 renderDay(tripDays[0]);
