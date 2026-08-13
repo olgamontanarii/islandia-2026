@@ -891,27 +891,33 @@ body {
 }
 
 /* =========================================================
-   FILTROS DEL MAPA
+   FILTROS DEL MAPA · ESTILO PRO
 ========================================================= */
 
 .map-filters {
   display: flex;
   flex-wrap: wrap;
 
-  gap: 8px;
+  gap: 10px;
 
-  margin-bottom: 18px;
+  margin-bottom: 22px;
 }
 
 
-.map-filter {
-  padding: 8px 13px;
+/* Botón normal */
 
-  border: 1px solid var(--stone);
+.map-filter {
+  appearance: none;
+
+  padding: 10px 16px;
+
+  border: 1px solid rgba(23, 57, 95, 0.12);
   border-radius: 999px;
 
-  background: var(--white);
+  background: rgba(255, 255, 255, 0.8);
   color: var(--navy);
+
+  font-family: Arial, Helvetica, sans-serif;
 
   font-size: 11px;
   font-weight: 800;
@@ -920,29 +926,53 @@ body {
 
   cursor: pointer;
 
+  box-shadow:
+    0 4px 12px rgba(23, 57, 95, 0.05);
+
   transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
     background 0.15s ease,
-    color 0.15s ease,
-    transform 0.15s ease;
+    color 0.15s ease;
 }
 
+
+/* Al pasar el ratón */
 
 .map-filter:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 
-  background: var(--ice);
+  background: var(--white);
+
+  box-shadow:
+    0 7px 18px rgba(23, 57, 95, 0.09);
 }
 
 
+/* Botón seleccionado */
+
 .map-filter.active {
+  border-color: var(--navy);
+
   background: var(--navy);
   color: var(--white);
 
-  border-color: var(--navy);
+  box-shadow:
+    0 7px 18px rgba(23, 57, 95, 0.18);
 }
 
 
-/* En móvil dejamos que se puedan deslizar horizontalmente */
+/* El botón TODO un poco más especial */
+
+.map-filter[data-map-filter="all"] {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+
+/* =========================================================
+   MÓVIL
+========================================================= */
 
 @media (max-width: 700px) {
 
@@ -951,11 +981,21 @@ body {
 
     overflow-x: auto;
 
-    padding-bottom: 4px;
+    padding-bottom: 6px;
+
+    scrollbar-width: none;
   }
+
+
+  .map-filters::-webkit-scrollbar {
+    display: none;
+  }
+
 
   .map-filter {
     flex-shrink: 0;
+
+    padding: 9px 14px;
   }
 
 }
