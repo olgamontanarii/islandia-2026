@@ -1,30 +1,11 @@
 /* =========================================================
    MAPA GENERAL DEL VIAJE
-   Este archivo se encarga únicamente del mapa.
-
-   Leaflet = librería que dibuja el mapa
-   map.js  = nuestra configuración del mapa
 ========================================================= */
 
 
 /* =========================================================
    CREAR EL MAPA
 ========================================================= */
-
-/*
-  Le decimos a Leaflet:
-
-  "Busca el elemento HTML que tenga id='map'
-   y dibuja ahí el mapa."
-
-  setView() recibe:
-
-  [latitud, longitud]
-  nivel de zoom
-
-  Estas coordenadas centran el mapa aproximadamente
-  sobre Islandia.
-*/
 
 const map = L.map("map").setView(
   [64.9, -18.6],
@@ -33,17 +14,8 @@ const map = L.map("map").setView(
 
 
 /* =========================================================
-   CAPA BASE DEL MAPA
+   CAPA BASE
 ========================================================= */
-
-/*
-  Leaflet por sí solo sabe colocar marcadores,
-  líneas, controles, etc.
-
-  Pero necesita una capa de mapa visual.
-
-  Usamos OpenStreetMap como mapa base.
-*/
 
 L.tileLayer(
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -57,35 +29,113 @@ L.tileLayer(
 
 
 /* =========================================================
-   CAPAS DEL MAPA
-
-   Guardaremos aquí los elementos que dibujamos.
-
-   Esto nos permitirá borrarlos fácilmente cuando
-   cambiemos entre:
-   - TODO
-   - DÍA 1
-   - DÍA 2
-   - CAMPINGS
-   - SUPERMERCADOS
+   CAPA DONDE DIBUJAMOS MARCADORES Y RUTAS
 ========================================================= */
 
-const routeLayer = L.layerGroup().addTo(map);
+const routeLayer =
+  L.layerGroup().addTo(map);
+
 
 /* =========================================================
-   BOTONES DE FILTRO DEL MAPA
+   BOTONES DE FILTRO
 ========================================================= */
 
 const mapFilterButtons =
   document.querySelectorAll(".map-filter");
 
+
 /* =========================================================
-   DIBUJAR UN DÍA EN EL MAPA
+   DIBUJAR UN DÍA
 ========================================================= */
 
 function drawDayRoute(day) {
+
   routeLayer.clearLayers();
+
+
   const routeCoordinates = [];
+
+
+  day.activities.forEach(item => {
+
+    /*
+      Los trayectos no tienen una localización propia.
+
+      Solo dibujamos elementos que tengan location.
+    */
+    if (!item.location) {
+      return;
+    }
+
+
+    const coordinates = [
+      item.location.lat,
+      item.location.lng
+    ];
+
+
+    routeCoordinates.push(coordinates);
+
+
+    const marker =
+      L.marker(coordinates);
+
+
+    marker.bindPopup(`
+
+      <strong>
+        ${item.icon || "📍"} ${item.title || item.location.name}
+      </strong>
+
+      <br>
+
+      ${item.location.name}
+
+      ${
+        item.description
+          ? `
+            <br><br>
+            ${item.description}
+          `
+          : ""
+      }
+
+    `);
+
+
+    marker.addTo(routeLayer);
+
+  });
+
+
+  /* Línea entre las actividades */
+  if (routeCoordinates.length >= 2) {
+
+    L.polyline(
+      routeCoordinates,
+      {
+        weight: 4,
+        opacity: 0.7
+      }
+    ).addTo(routeLayer);
+
+  }
+
+
+  /* Encuadrar ese día */
+  if (routeCoordinates.length > 0) {
+
+    map.fitBounds(
+      routeCoordinates,
+      {
+        padding: [60, 60]
+      }
+    );
+
+  }
+
+}
+
 
 /* =========================================================
    DIBUJAR TODO EL VIAJE
@@ -93,71 +143,43 @@ function drawDayRoute(day) {
 
 function drawAllRoutes() {
 
-  /*
-    Limpiamos primero todo lo que hubiera
-    dibujado anteriormente.
-  */
   routeLayer.clearLayers();
 
 
-  /*
-    Guardaremos aquí TODAS las coordenadas
-    del viaje para después encuadrar el mapa.
-  */
   const allCoordinates = [];
 
 
-  /*
-    Recorremos cada día.
-  */
   tripDays.forEach(day => {
 
-    /*
-      Coordenadas correspondientes solamente
-      a este día.
-    */
     const dayCoordinates = [];
 
 
-    /*
-      Recorremos las actividades del día.
-    */
-    day.activities.forEach(activity => {
+    day.activities.forEach(item => {
 
-      /*
-        Si no tiene localización,
-        no puede aparecer en el mapa.
-      */
-      if (!activity.location) {
+      if (!item.location) {
         return;
       }
 
 
       const coordinates = [
-        activity.location.lat,
-        activity.location.lng
+        item.location.lat,
+        item.location.lng
       ];
 
 
-      /*
-        Guardamos la coordenada tanto en:
-        - la ruta del día
-        - la ruta global
-      */
       dayCoordinates.push(coordinates);
+
       allCoordinates.push(coordinates);
 
 
-      /*
-        Creamos el marcador.
-      */
-      const marker = L.marker(coordinates);
+      const marker =
+        L.marker(coordinates);
 
 
       marker.bindPopup(`
 
         <strong>
-          ${activity.icon} ${activity.title}
+          ${item.icon || "📍"} ${item.title || item.location.name}
         </strong>
 
         <br>
@@ -166,7 +188,7 @@ function drawAllRoutes() {
 
         <br>
 
-        ${activity.location.name}
+        ${item.location.name}
 
       `);
 
@@ -178,10 +200,7 @@ function drawAllRoutes() {
 
     /*
       Dibujamos una línea independiente
-      para cada día.
-
-      Así NO conectamos artificialmente
-      el final del Día 1 con el inicio del Día 2.
+      por cada día.
     */
     if (dayCoordinates.length >= 2) {
 
@@ -198,10 +217,6 @@ function drawAllRoutes() {
   });
 
 
-  /*
-    Ajustamos el mapa para que entren
-    todos los puntos del viaje.
-  */
   if (allCoordinates.length > 0) {
 
     map.fitBounds(
@@ -214,210 +229,7 @@ function drawAllRoutes() {
   }
 
 }
-   /* =========================================================
-   EVENTOS DE LOS FILTROS
-========================================================= */
 
-mapFilterButtons.forEach(button => {
-
-  button.addEventListener("click", () => {
-
-    /*
-      Quitamos el estado activo
-      de todos los filtros.
-    */
-    mapFilterButtons.forEach(filterButton => {
-      filterButton.classList.remove("active");
-    });
-
-
-    /*
-      Marcamos como activo el botón pulsado.
-    */
-    button.classList.add("active");
-
-
-    /* Leemos qué filtro se ha pulsado */
-const filter = button.dataset.mapFilter;
-
-
-/* =====================================================
-   TODO EL VIAJE
-===================================================== */
-
-if (filter === "all") {
-
-  drawAllRoutes();
-
-  return;
-}
-
-
-/* =====================================================
-   CAMPINGS
-===================================================== */
-
-if (filter === "campings") {
-
-  drawCampings();
-
-  return;
-}
-
-
-/* =====================================================
-   SUPERMERCADOS
-===================================================== */
-
-if (filter === "supermarkets") {
-
-  drawSupermarkets();
-
-  return;
-}
-
-
-/* =====================================================
-   DÍAS 1–6
-===================================================== */
-
-const dayId = Number(filter);
-
-
-const selectedDay =
-  tripDays.find(day => day.id === dayId);
-
-
-if (selectedDay) {
-  drawDayRoute(selectedDay);
-}
-  });
-
-});
-  /* =======================================================
-     RECORRER TODAS LAS ACTIVIDADES
-  ======================================================= */
-
-  day.activities.forEach(activity => {
-    if (!activity.location) {
-      return;
-    }
-
-    /*
-      Extraemos las coordenadas de la actividad.
-    */
-     
-    const coordinates = [
-      activity.location.lat,
-      activity.location.lng
-    ];
-
-
-    /*
-      Guardamos las coordenadas para construir
-      posteriormente la ruta.
-    */
-     
-    routeCoordinates.push(coordinates);
-
-
-    /* =====================================================
-       CREAR MARCADOR
-    ===================================================== */
-
-    const marker = L.marker(coordinates);
-
-    /*
-      Popup que aparece cuando pulsamos
-      sobre el marcador.
-    */
-    marker.bindPopup(`
-
-      <strong>
-        ${activity.icon} ${activity.title}
-      </strong>
-
-      <br>
-
-      ${activity.location.name}
-
-      <br><br>
-
-      ${activity.description}
-
-    `);
-
-
-    /*
-      Añadimos el marcador a nuestra capa.
-    */
-    marker.addTo(routeLayer);
-
-  });
-
-
-  /* =======================================================
-     DIBUJAR LÍNEA ENTRE LAS PARADAS
-  ======================================================= */
-  if (routeCoordinates.length >= 2) {
-
-    const routeLine = L.polyline(
-      routeCoordinates,
-      {
-        weight: 4,
-        opacity: 0.7
-      }
-    );
-
-
-    routeLine.addTo(routeLayer);
-
-  }
-
-
-  /* =======================================================
-     ENCUADRAR EL DÍA
-  ======================================================= */
-
-  /*
-    Si tenemos puntos en el mapa, Leaflet calcula
-    automáticamente el zoom necesario para que
-    podamos ver toda la ruta del día.
-
-    ESTO es el fitBounds del que hablábamos antes.
-
-    Aquí sí tiene sentido porque estamos viendo
-    específicamente UN día.
-  */
-  if (routeCoordinates.length > 0) {
-
-    map.fitBounds(
-      routeCoordinates,
-      {
-        padding: [60, 60]
-      }
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   MOSTRAR DÍA 1 AL INICIAR
-
-   De momento dibujamos el Día 1.
-
-   Después crearemos los botones:
-   TODO · DÍA 1 · DÍA 2 · ...
-========================================================= */
-/* =========================================================
-   MAPA INICIAL
-   Al entrar por primera vez mostramos
-   todo el viaje.
-========================================================= */
-
-drawAllRoutes();
 
 /* =========================================================
    DIBUJAR CAMPINGS
@@ -425,11 +237,9 @@ drawAllRoutes();
 
 function drawCampings() {
 
-  /* Limpiamos cualquier ruta o marcador anterior */
   routeLayer.clearLayers();
 
 
-  /* Guardamos coordenadas para poder encuadrar el mapa */
   const coordinates = [];
 
 
@@ -444,7 +254,8 @@ function drawCampings() {
     coordinates.push(point);
 
 
-    const marker = L.marker(point);
+    const marker =
+      L.marker(point);
 
 
     marker.bindPopup(`
@@ -469,7 +280,6 @@ function drawCampings() {
   });
 
 
-  /* Ajustamos el mapa a todos los campings */
   if (coordinates.length > 0) {
 
     map.fitBounds(
@@ -491,7 +301,6 @@ function drawCampings() {
 
 function drawSupermarkets() {
 
-  /* Limpiamos lo que hubiera antes */
   routeLayer.clearLayers();
 
 
@@ -509,7 +318,8 @@ function drawSupermarkets() {
     coordinates.push(point);
 
 
-    const marker = L.marker(point);
+    const marker =
+      L.marker(point);
 
 
     marker.bindPopup(`
@@ -534,7 +344,6 @@ function drawSupermarkets() {
   });
 
 
-  /* Ajustamos el mapa a los supermercados */
   if (coordinates.length > 0) {
 
     map.fitBounds(
@@ -548,3 +357,91 @@ function drawSupermarkets() {
   }
 
 }
+
+
+/* =========================================================
+   EVENTOS DE LOS FILTROS
+========================================================= */
+
+mapFilterButtons.forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    /* Quitamos active de todos */
+    mapFilterButtons.forEach(filterButton => {
+      filterButton.classList.remove("active");
+    });
+
+
+    /* Activamos el seleccionado */
+    button.classList.add("active");
+
+
+    const filter =
+      button.dataset.mapFilter;
+
+
+    /* -----------------------------------------------------
+       TODO
+    ----------------------------------------------------- */
+
+    if (filter === "all") {
+
+      drawAllRoutes();
+
+      return;
+    }
+
+
+    /* -----------------------------------------------------
+       CAMPINGS
+    ----------------------------------------------------- */
+
+    if (filter === "campings") {
+
+      drawCampings();
+
+      return;
+    }
+
+
+    /* -----------------------------------------------------
+       SUPERMERCADOS
+    ----------------------------------------------------- */
+
+    if (filter === "supermarkets") {
+
+      drawSupermarkets();
+
+      return;
+    }
+
+
+    /* -----------------------------------------------------
+       DÍAS 1–6
+    ----------------------------------------------------- */
+
+    const dayId =
+      Number(filter);
+
+
+    const selectedDay =
+      tripDays.find(
+        day => day.id === dayId
+      );
+
+
+    if (selectedDay) {
+      drawDayRoute(selectedDay);
+    }
+
+  });
+
+});
+
+
+/* =========================================================
+   MAPA INICIAL
+========================================================= */
+
+drawAllRoutes();
