@@ -492,3 +492,15 @@ content.addEventListener("click", event => {
   openDayMap(dayId);
 
 });
+
+/* =========================================================
+   CARGA INICIAL
+
+   En vez de depender del Día 1 escrito manualmente
+   en index.html, hacemos que JavaScript lo genere.
+
+   Así la web utiliza siempre data.js como fuente
+   de información.
+========================================================= */
+
+renderDay(tripDays[0]);
