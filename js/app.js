@@ -1,48 +1,46 @@
 console.log("✅ app.js cargado correctamente");
 console.log("Días disponibles:", tripDays);
+
+
 /* =========================================================
    APLICACIÓN DEL ITINERARIO
 
-   Este archivo contiene la LÓGICA de la web.
-
-   data.js = qué información tenemos
-   app.js  = qué hacemos con esa información
+   data.js = datos del viaje
+   app.js  = lógica de la web
 ========================================================= */
 
 
 /* =========================================================
-   ELEMENTOS DEL HTML QUE VAMOS A MODIFICAR
+   ELEMENTOS DEL HTML
 ========================================================= */
 
-/* Todos los botones de navegación */
+/* Todos los botones de navegación superior */
 const dayButtons = document.querySelectorAll(".day");
 
 
-/* Contenido del itinerario */
+/* Contenido principal del itinerario */
 const content = document.querySelector(".content");
 
 
-/* Botón especial del mapa */
+/* Botón superior de MAPA */
 const mapButton = document.querySelector(".map-tab");
 
 
-/* Sección donde estará el mapa */
+/* Sección completa del mapa */
 const mapSection = document.querySelector("#map-section");
 
 
 /* =========================================================
-   FUNCIÓN PRINCIPAL: MOSTRAR UN DÍA
+   MOSTRAR UN DÍA
 ========================================================= */
 
 function renderDay(day) {
 
-  /*
-    Construimos las estadísticas.
+  /* -------------------------------------------------------
+     ESTADÍSTICAS
+  ------------------------------------------------------- */
 
-    .map() recorre cada estadística del array y la
-    convierte en HTML.
-  */
-  const statsHTML = day.stats
+  const statsHTML = (day.stats || [])
     .map(stat => `
       <div class="stat">
         <strong>${stat.value}</strong>
@@ -52,19 +50,19 @@ function renderDay(day) {
     .join("");
 
 
-  /*
-    Ahora hacemos exactamente lo mismo con
-    las actividades.
-  */
-  const activitiesHTML = day.activities
+  /* -------------------------------------------------------
+     ACTIVIDADES
+  ------------------------------------------------------- */
+
+  const activitiesHTML = (day.activities || [])
     .map(activity => createActivityHTML(activity))
     .join("");
 
 
-  /*
-    Sustituimos TODO lo que hay dentro de <main>
-    por el contenido correspondiente al día seleccionado.
-  */
+  /* -------------------------------------------------------
+     GENERAMOS TODO EL CONTENIDO DEL DÍA
+  ------------------------------------------------------- */
+
   content.innerHTML = `
 
     <!-- =====================================
@@ -91,17 +89,29 @@ function renderDay(day) {
           ${day.intro}
         </p>
 
+
+        <!-- ESTADÍSTICAS -->
         <div class="stats">
           ${statsHTML}
         </div>
-         <!-- =====================================
-              ACCIONES DEL DÍA
-             ====================================== -->
-      <div class="day-actions">
-        <button class="day-route-button" data-day="${day.id}" > 🗺️ Ver ruta del día </button>
+
+
+        <!-- ACCIONES DEL DÍA -->
+        <div class="day-actions">
+
+          <button
+            class="day-route-button"
+            data-day="${day.id}"
+          >
+            🗺️ Ver ruta del día
+          </button>
+
+        </div>
+
       </div>
-      </div>
+
     </section>
+
 
     <!-- =====================================
          TIMELINE
@@ -121,8 +131,18 @@ function renderDay(day) {
 
       </div>
 
+
       <div class="timeline">
-        ${activitiesHTML}
+
+        ${
+          activitiesHTML ||
+          `
+            <div class="empty-day">
+              Todavía no hemos añadido actividades para este día.
+            </div>
+          `
+        }
+
       </div>
 
     </section>
@@ -132,15 +152,15 @@ function renderDay(day) {
 
 
 /* =========================================================
-   CREAR UNA ACTIVIDAD
+   CREAR HTML DE UNA ACTIVIDAD
 ========================================================= */
 
 function createActivityHTML(activity) {
 
-  /*
-    Creamos las etiquetas:
-    duración, dificultad, reserva, etc.
-  */
+  /* -------------------------------------------------------
+     ETIQUETAS
+  ------------------------------------------------------- */
+
   const tagsHTML = (activity.tags || [])
     .map(tag => `
       <span>${tag}</span>
@@ -148,12 +168,10 @@ function createActivityHTML(activity) {
     .join("");
 
 
-  /*
-    Creamos los botones de la actividad.
+  /* -------------------------------------------------------
+     BOTONES
+  ------------------------------------------------------- */
 
-    Si una actividad no tiene botones,
-    utilizamos un array vacío [].
-  */
   const actionsHTML = (activity.actions || [])
     .map(action => `
 
@@ -168,39 +186,47 @@ function createActivityHTML(activity) {
     .join("");
 
 
-  /*
-    Devolvemos el HTML completo de una actividad.
-  */
+  /* -------------------------------------------------------
+     ACTIVIDAD COMPLETA
+  ------------------------------------------------------- */
+
   return `
 
     <article class="activity">
 
+      <!-- Hora -->
       <div class="activity-time">
-        ${activity.time}
+        ${activity.time || ""}
       </div>
 
+
+      <!-- Punto de la timeline -->
       <div class="activity-dot"></div>
 
 
-      <div class="
-        activity-card
-        ${activity.featured ? "featured" : ""}
-      ">
+      <!-- Tarjeta -->
+      <div
+        class="
+          activity-card
+          ${activity.featured ? "featured" : ""}
+        "
+      >
 
         <div class="activity-top">
 
           <span class="activity-icon">
-            ${activity.icon}
+            ${activity.icon || "📍"}
           </span>
+
 
           <div>
 
             <p class="activity-label">
-              ${activity.category}
+              ${activity.category || ""}
             </p>
 
             <h4>
-              ${activity.title}
+              ${activity.title || ""}
             </h4>
 
           </div>
@@ -209,13 +235,19 @@ function createActivityHTML(activity) {
 
 
         <p class="activity-description">
-          ${activity.description}
+          ${activity.description || ""}
         </p>
 
 
-        <div class="activity-tags">
-          ${tagsHTML}
-        </div>
+        ${
+          tagsHTML
+            ? `
+              <div class="activity-tags">
+                ${tagsHTML}
+              </div>
+            `
+            : ""
+        }
 
 
         ${
@@ -237,23 +269,18 @@ function createActivityHTML(activity) {
 
 
 /* =========================================================
-   CAMBIAR EL BOTÓN ACTIVO
+   CAMBIAR EL DÍA ACTIVO EN LA NAVEGACIÓN
 ========================================================= */
 
 function setActiveDay(selectedButton) {
 
-  /*
-    Primero quitamos "active" de TODOS los botones.
-  */
+  /* Quitamos active de todos */
   dayButtons.forEach(button => {
     button.classList.remove("active");
   });
 
 
-  /*
-    Después añadimos "active" solamente
-    al botón que acabamos de pulsar.
-  */
+  /* Activamos el botón seleccionado */
   selectedButton.classList.add("active");
 }
 
@@ -267,12 +294,10 @@ dayButtons.forEach((button, index) => {
   button.addEventListener("click", () => {
 
     /*
-      IMPORTANTE:
+      El botón MAPA también tiene clase .day.
 
-      Dentro de .day ahora también está el botón MAPA.
-
-      El mapa NO corresponde a un elemento de tripDays,
-      por eso comprobamos que este botón no sea .map-tab.
+      Si es MAPA, este bloque no hace nada,
+      porque tiene su propio evento más abajo.
     */
     if (button.classList.contains("map-tab")) {
       return;
@@ -283,85 +308,87 @@ dayButtons.forEach((button, index) => {
     const selectedDay = tripDays[index];
 
 
-    /* Marcamos el día seleccionado */
+    if (!selectedDay) {
+      return;
+    }
+
+
+    /* Activamos visualmente el día */
     setActiveDay(button);
 
 
-    /* Ocultamos el mapa por si estaba abierto */
+    /* Ocultamos mapa */
     mapSection.classList.add("hidden");
 
 
-    /* Volvemos a mostrar el itinerario */
+    /* Mostramos itinerario */
     content.classList.remove("hidden");
 
 
-    /* Dibujamos el día seleccionado */
+    /* Dibujamos el día */
     renderDay(selectedDay);
 
   });
 
 });
 
+
 /* =========================================================
-   ABRIR EL MAPA DESDE UN DÍA
+   ABRIR EL MAPA DIRECTAMENTE DESDE UN DÍA
 
-   Esta función se ejecutará cuando pulsemos:
-
-   "🗺 Ver ruta del día"
+   Ejemplo:
+   Día 1 → "Ver ruta del día"
+   abre MAPA con DÍA 1 seleccionado
 ========================================================= */
 
 function openDayMap(dayId) {
 
-  /* Buscamos el día correspondiente */
+  /* Buscamos el día */
   const selectedDay =
     tripDays.find(day => day.id === dayId);
 
 
-  /* Si por algún motivo no existe, paramos */
   if (!selectedDay) {
     return;
   }
 
 
-  /* =======================================================
-     CAMBIAR A LA PESTAÑA MAPA
-  ======================================================= */
+  /* -------------------------------------------------------
+     NAVEGACIÓN SUPERIOR
+  ------------------------------------------------------- */
 
-  /* Quitamos "active" de la navegación superior */
   dayButtons.forEach(button => {
     button.classList.remove("active");
   });
 
 
-  /* Activamos MAPA */
   mapButton.classList.add("active");
 
 
-  /* Ocultamos el itinerario */
+  /* -------------------------------------------------------
+     MOSTRAR MAPA
+  ------------------------------------------------------- */
+
   content.classList.add("hidden");
 
-
-  /* Mostramos la sección del mapa */
   mapSection.classList.remove("hidden");
 
 
-  /* =======================================================
-     CAMBIAR EL FILTRO DEL MAPA
-  ======================================================= */
+  /* -------------------------------------------------------
+     FILTROS INTERNOS DEL MAPA
+  ------------------------------------------------------- */
 
   const mapFilterButtons =
     document.querySelectorAll(".map-filter");
 
 
-  /* Quitamos active de todos los filtros */
   mapFilterButtons.forEach(button => {
     button.classList.remove("active");
   });
 
 
   /*
-    Buscamos específicamente el botón:
-
+    Buscamos:
     data-map-filter="1"
     data-map-filter="2"
     etc.
@@ -377,109 +404,132 @@ function openDayMap(dayId) {
   }
 
 
-  /* =======================================================
-     DIBUJAR LA RUTA
-  ======================================================= */
+  /* -------------------------------------------------------
+     DIBUJAR RUTA
+  ------------------------------------------------------- */
 
-  /*
-    Esperamos a que el mapa sea visible antes
-    de pedirle a Leaflet que calcule su tamaño.
-  */
   setTimeout(() => {
 
+    /*
+      Leaflet recalcula el tamaño porque
+      el mapa acaba de pasar de oculto a visible.
+    */
     map.invalidateSize();
 
+
+    /*
+      Mostramos solamente la ruta del día.
+    */
     drawDayRoute(selectedDay);
 
   }, 150);
 
 }
 
-/* =========================================================
-   PESTAÑA MAPA GENERAL
 
-   Cuando pulsamos "MAPA":
-   - ocultamos el itinerario
-   - mostramos la sección del mapa
-
-   Cuando volvemos a pulsar un día:
-   - mostramos el itinerario
-   - ocultamos el mapa
-========================================================= */
 /* =========================================================
-   MOSTRAR MAPA
+   BOTÓN SUPERIOR "MAPA"
+
+   Al pulsarlo:
+   - abre el mapa
+   - marca TODO
+   - muestra todas las rutas
 ========================================================= */
 
 mapButton.addEventListener("click", () => {
 
-  /* Quitamos "active" de todos los botones */
+  /* -------------------------------------------------------
+     NAVEGACIÓN SUPERIOR
+  ------------------------------------------------------- */
+
   dayButtons.forEach(button => {
     button.classList.remove("active");
   });
 
 
-  /* Marcamos MAPA como seleccionado */
   mapButton.classList.add("active");
 
 
-  /* Ocultamos el itinerario */
+  /* -------------------------------------------------------
+     MOSTRAR MAPA
+  ------------------------------------------------------- */
+
   content.classList.add("hidden");
 
-
-  /* Mostramos la sección del mapa */
   mapSection.classList.remove("hidden");
 
-  /*
-    Esperamos un instante para que el navegador
-    termine de mostrar físicamente el contenedor.
 
-    Después:
+  /* -------------------------------------------------------
+     ACTIVAR FILTRO TODO
+  ------------------------------------------------------- */
 
-    1. Leaflet vuelve a calcular el tamaño.
-    2. Volvemos a dibujar la ruta del Día 1.
-       Así fitBounds() se ejecuta cuando el mapa
-       YA tiene unas dimensiones reales.
-  */
+  const mapFilters =
+    document.querySelectorAll(".map-filter");
+
+
+  mapFilters.forEach(button => {
+    button.classList.remove("active");
+  });
+
+
+  const allFilter =
+    document.querySelector(
+      '.map-filter[data-map-filter="all"]'
+    );
+
+
+  if (allFilter) {
+    allFilter.classList.add("active");
+  }
+
+
+  /* -------------------------------------------------------
+     REDIBUJAR MAPA
+  ------------------------------------------------------- */
+
   setTimeout(() => {
 
+    /*
+      Corrige el tamaño de Leaflet después
+      de mostrar el contenedor.
+    */
     map.invalidateSize();
 
-    drawDayRoute(tripDays[0]);
+
+    /*
+      MAPA general = todas las rutas.
+    */
+    drawAllRoutes();
 
   }, 150);
 
 });
 
+
 /* =========================================================
    BOTÓN "VER RUTA DEL DÍA"
 
-   Utilizamos delegación de eventos porque este botón
-   se genera dinámicamente dentro de renderDay().
+   El botón se crea dinámicamente dentro de renderDay(),
+   por eso usamos delegación de eventos.
 ========================================================= */
 
 content.addEventListener("click", event => {
 
   /*
-    Comprobamos si lo que hemos pulsado
-    es el botón de ruta.
+    Buscamos si el clic ocurrió dentro
+    de un botón .day-route-button.
   */
   const routeButton =
     event.target.closest(".day-route-button");
 
 
-  /*
-    Si hemos pulsado cualquier otra cosa,
-    no hacemos nada.
-  */
   if (!routeButton) {
     return;
   }
 
 
   /*
-    data-day viene del HTML como texto.
-
-    Lo convertimos a número:
+    data-day llega como texto.
 
     "1" → 1
   */
@@ -487,19 +537,19 @@ content.addEventListener("click", event => {
     Number(routeButton.dataset.day);
 
 
-  /* Abrimos directamente ese día en el mapa */
   openDayMap(dayId);
 
 });
 
+
 /* =========================================================
    CARGA INICIAL
-
-   En vez de depender del Día 1 escrito manualmente
-   en index.html, hacemos que JavaScript lo genere.
-
-   Así la web utiliza siempre data.js como fuente
-   de información.
 ========================================================= */
 
+/*
+  Siempre generamos el Día 1 desde data.js.
+
+  Así index.html no necesita contener
+  manualmente todo el itinerario.
+*/
 renderDay(tripDays[0]);
