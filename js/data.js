@@ -1,809 +1,853 @@
+console.log("✅ app.js cargado correctamente");
+console.log("Días disponibles:", tripDays);
+
+
 /* =========================================================
-   DATOS DEL VIAJE · ISLANDIA 2026
+   APLICACIÓN DEL ITINERARIO
+
+   data.js = datos del viaje
+   app.js  = lógica de la web
 ========================================================= */
 
-const tripDays = [
 
-  /* =======================================================
-     DÍA 1 · MIÉRCOLES 9
-  ======================================================= */
+/* =========================================================
+   ELEMENTOS DEL HTML
+========================================================= */
 
-  {
-    id: 1,
+const dayButtons = document.querySelectorAll(".day");
 
-    navDate: "MIÉ 9",
+const content = document.querySelector(".content");
 
-    date: "MIÉRCOLES 9 DE SEPTIEMBRE",
+const mapButton = document.querySelector(".map-tab");
 
-    title: "Círculo Dorado",
-
-    intro:
-      "Nuestro primer día en Islandia. Camper, paisajes volcánicos y aguas termales.",
+const mapSection = document.querySelector("#map-section");
 
 
-    /* -----------------------------------------------------
-       RESUMEN DEL DÍA
-    ----------------------------------------------------- */
+/* =========================================================
+   MOSTRAR UN DÍA
+========================================================= */
 
-    stats: [
+function renderDay(day) {
 
-      {
-        value: "190",
-        label: "KM"
-      },
+  const statsHTML = (day.stats || [])
+    .map(stat => `
+      <div class="stat">
+        <strong>${stat.value}</strong>
+        <span>${stat.label}</span>
+      </div>
+    `)
+    .join("");
 
-      {
-        value: "3H 20",
-        label: "CONDUCIENDO"
-      },
 
-      {
-        value: "7–8H",
-        label: "DE RUTA"
-      },
+  const timelineHTML = (day.activities || [])
+    .map(item => {
 
-      {
-        value: "RELAX",
-        label: "RITMO DEL DÍA"
+      if (item.type === "drive") {
+        return createDriveHTML(item);
       }
 
-    ],
+      return createActivityHTML(item);
+
+    })
+    .join("");
 
 
-    /* =====================================================
-       ACTIVIDADES + TRAYECTOS
-    ===================================================== */
+  content.innerHTML = `
 
-    activities: [
+    <!-- =====================================
+         HERO DEL DÍA
+    ====================================== -->
 
+    <section class="hero">
 
-      /* ===================================================
-         ACTIVIDAD · RECOGIDA CAMPER
-      =================================================== */
+      <span class="giant-number">
+        ${String(day.id).padStart(2, "0")}
+      </span>
 
-      {
-        type: "activity",
+      <div class="hero-content">
 
-        time: "12:00",
+        <p class="eyebrow">
+          DÍA ${String(day.id).padStart(2, "0")} · ${day.date}
+        </p>
 
-        icon: "🚐",
+        <h2>
+          ${day.title}
+        </h2>
 
-        category: "INICIO",
-
-        title: "Recogida de la camper",
-
-
-        location: {
-
-          name: "Keflavík",
-
-          lat: 63.9850,
-
-          lng: -22.6056,
-
-          mapsUrl: "#"
-
-        },
+        <p class="intro">
+          ${day.intro}
+        </p>
 
 
-        description:
-          "Recogemos la camper, organizamos equipaje y dejamos todo listo para empezar la ruta.",
+        <!-- ESTADÍSTICAS -->
+        <div class="stats">
+          ${statsHTML}
+        </div>
 
 
-        tags: [
+        <!-- ACCIONES DEL DÍA -->
+        <div class="day-actions">
 
-          "⏱ 1 h",
+          <button
+            class="day-route-button"
+            data-day="${day.id}"
+          >
+            🗺️ Ver ruta del día
+          </button>
 
-          "📍 Keflavík",
+        </div>
 
-          "🟢 Sin reserva",
+      </div>
 
-          "⚠️ Hora por confirmar"
-
-        ],
-
-
-        important: [
-
-          "Comprobar combustible",
-
-          "Revisar calefacción y gas",
-
-          "Guardar equipaje antes de salir"
-
-        ]
-
-      },
+    </section>
 
 
-      /* ===================================================
-         TRAYECTO · KEFLAVÍK → ÞINGVELLIR
-      =================================================== */
+    <!-- =====================================
+         TIMELINE
+    ====================================== -->
 
-      {
-        type: "drive",
+    <section class="timeline-section">
 
-        icon: "🚐",
+      <div class="section-heading">
 
-        from: "Keflavík",
+        <p class="eyebrow">
+          RUTA DEL DÍA
+        </p>
 
-        to: "Þingvellir",
+        <h3>
+          Qué hacemos hoy
+        </h3>
 
-        km: 105,
-
-        minutes: 90,
-
-        mapsUrl: "#",
-
-
-        roads: [
-
-          "41",
-
-          "1",
-
-          "36"
-
-        ],
+      </div>
 
 
-        offlineDirections: [
+      <div class="timeline">
 
-          "Salir de Keflavík por la carretera 41 en dirección Reykjavík.",
-
-          "Continuar hasta enlazar con la carretera 1.",
-
-          "Tomar la carretera 36 hacia Þingvellir.",
-
-          "Seguir las indicaciones hacia el Visitor Center de Þingvellir y P1 Hakið."
-
-        ],
-
-
-        parking: {
-
-          name: "P1 Hakið",
-
-          info:
-            "Parking junto al Visitor Center de Þingvellir y la parte alta de Almannagjá. Será nuestro punto de llegada al parque.",
-
-          mapsUrl: "#"
-
+        ${
+          timelineHTML ||
+          `
+            <div class="empty-day">
+              Todavía no hemos añadido actividades para este día.
+            </div>
+          `
         }
 
-      },
-
-
-      /* ===================================================
-         ACTIVIDAD · ÞINGVELLIR
-      =================================================== */
-
-      {
-        type: "activity",
-
-        time: "14:00",
-
-        icon: "🌋",
-
-        category: "PARQUE NACIONAL",
-
-        title: "Þingvellir",
-
-
-        location: {
-
-          name: "Þingvellir",
-
-          lat: 64.2559,
-
-          lng: -21.1300,
-
-          mapsUrl: "#"
-
-        },
-
-
-        description:
-          "Primera parada del viaje y paseo por una de las zonas geológicas más importantes de Islandia.",
-
-
-        tags: [
-
-          "⏱ 1 h 30",
-
-          "🥾 Fácil",
-
-          "📸 Muy top"
-
-        ],
-
-
-        parking: {
-
-          name: "P1 Hakið",
-
-          info:
-            "Parking junto al Visitor Center y la parte alta de Almannagjá.",
-
-          mapsUrl: "#"
-
-        },
-
-
-        important: [
-
-          "Llevar cortavientos",
-
-          "Hay senderos fáciles",
-
-          "Conviene tener calzado impermeable"
-
-        ]
-
-      },
-
-
-      /* ===================================================
-         TRAYECTO · ÞINGVELLIR → GEYSIR
-      =================================================== */
-
-      {
-        type: "drive",
-
-        icon: "🚐",
-
-        from: "Þingvellir",
-
-        to: "Geysir",
-
-        km: 60,
-
-        minutes: 50,
-
-        mapsUrl: "#",
-
-
-        roads: [
-
-          "36",
-
-          "365",
-
-          "37",
-
-          "35"
-
-        ],
-
-
-        offlineDirections: [
-
-          "Salir de Þingvellir por la carretera 36.",
-
-          "Continuar por la carretera 365.",
-
-          "Seguir hacia Laugarvatn.",
-
-          "Continuar por la carretera 37.",
-
-          "Tomar la carretera 35 en dirección Geysir.",
-
-          "Al llegar, seguir las indicaciones hacia el área de aparcamiento del Geysir Center."
-
-        ],
-
-
-        parking: {
-
-          name: "Geysir Center Parking",
-
-          info:
-            "Aparcamiento del área de visitantes de Geysir, frente a la zona geotérmica.",
-
-          mapsUrl: "#"
-
+      </div>
+
+    </section>
+
+  `;
+}
+
+
+/* =========================================================
+   CREAR HTML DE UNA ACTIVIDAD
+========================================================= */
+
+function createActivityHTML(activity) {
+
+  /* -------------------------------------------------------
+     ETIQUETAS
+  ------------------------------------------------------- */
+
+  const tagsHTML = (activity.tags || [])
+    .map(tag => `
+      <span>${tag}</span>
+    `)
+    .join("");
+
+
+  /* -------------------------------------------------------
+     INFORMACIÓN IMPORTANTE
+  ------------------------------------------------------- */
+
+  const importantHTML = (activity.important || [])
+    .map(item => `
+      <li>${item}</li>
+    `)
+    .join("");
+
+
+  /* -------------------------------------------------------
+     PARKING
+  ------------------------------------------------------- */
+
+  const parkingHTML = activity.parking
+    ? `
+      <div class="activity-extra parking-info">
+
+        <strong>
+          🅿️ ${activity.parking.name || "Parking"}
+        </strong>
+
+        <p>
+          ${activity.parking.info || ""}
+        </p>
+
+        ${
+          activity.parking.mapsUrl &&
+          activity.parking.mapsUrl !== "#"
+            ? `
+              <a
+                href="${activity.parking.mapsUrl}"
+                class="action-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                📍 Abrir parking en Maps
+              </a>
+            `
+            : ""
         }
 
-      },
+      </div>
+    `
+    : "";
 
 
-      /* ===================================================
-         ACTIVIDAD · GEYSIR
-      =================================================== */
+  /* -------------------------------------------------------
+     RESERVA
+  ------------------------------------------------------- */
 
-      {
-        type: "activity",
+  const bookingHTML = activity.booking
+    ? `
+      <div class="activity-extra">
 
-        time: "16:30",
+        <strong>
+          🎟 Reserva
+        </strong>
 
-        icon: "💦",
+        <p>
+          ${activity.booking.advice || ""}
+        </p>
 
-        category: "GEOTERMIA",
-
-        title: "Geysir",
-
-
-        location: {
-
-          name: "Geysir",
-
-          lat: 64.3104,
-
-          lng: -20.3024,
-
-          mapsUrl: "#"
-
-        },
-
-
-        description:
-          "Parada breve en la zona geotérmica para ver Strokkur en erupción.",
-
-
-        tags: [
-
-          "⏱ 45 min",
-
-          "🟢 Sin reserva"
-
-        ],
-
-
-        parking: {
-
-          name: "Geysir Center Parking",
-
-          info:
-            "Aparcamiento junto al Geysir Center y frente al acceso a la zona geotérmica.",
-
-          mapsUrl: "#"
-
+        ${
+          activity.booking.url &&
+          activity.booking.url !== "#"
+            ? `
+              <a
+                href="${activity.booking.url}"
+                class="action-link primary"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                🎟 Reservar
+              </a>
+            `
+            : ""
         }
 
-      },
+      </div>
+    `
+    : "";
 
 
-      /* ===================================================
-         TRAYECTO · GEYSIR → GULLFOSS
-      =================================================== */
+  /* -------------------------------------------------------
+     MAPS DE LA ACTIVIDAD
+  ------------------------------------------------------- */
 
-      {
-        type: "drive",
-
-        icon: "🚐",
-
-        from: "Geysir",
-
-        to: "Gullfoss",
-
-        km: 10,
-
-        minutes: 10,
-
-        mapsUrl: "#",
-
-
-        roads: [
-
-          "35"
-
-        ],
+  const mapsHTML =
+    activity.location &&
+    activity.location.mapsUrl &&
+    activity.location.mapsUrl !== "#"
+      ? `
+        <a
+          href="${activity.location.mapsUrl}"
+          class="action-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          📍 Maps
+        </a>
+      `
+      : "";
 
 
-        offlineDirections: [
+  /* -------------------------------------------------------
+     ACTIVIDAD COMPLETA
+  ------------------------------------------------------- */
 
-          "Salir de Geysir por la carretera 35.",
+  return `
 
-          "Continuar aproximadamente 10 km en dirección Gullfoss.",
+    <article class="activity">
 
-          "Seguir las indicaciones hacia Gullfoss.",
-
-          "Al llegar, dirigirse al aparcamiento superior junto al Visitor Center."
-
-        ],
+      <div class="activity-time">
+        ${activity.time || ""}
+      </div>
 
 
-        parking: {
+      <div class="activity-dot"></div>
 
-          name: "Gullfoss Upper Parking",
 
-          info:
-            "Parking superior junto al Gullfoss Visitor Center. Desde aquí se accede fácilmente a los miradores.",
+      <div
+        class="
+          activity-card
+          ${activity.featured ? "featured" : ""}
+        "
+      >
 
-          mapsUrl: "#"
+        <div class="activity-top">
 
+          <span class="activity-icon">
+            ${activity.icon || "📍"}
+          </span>
+
+
+          <div>
+
+            <p class="activity-label">
+              ${activity.category || ""}
+            </p>
+
+            <h4>
+              ${activity.title || ""}
+            </h4>
+
+          </div>
+
+        </div>
+
+
+        <p class="activity-description">
+          ${activity.description || ""}
+        </p>
+
+
+        ${
+          tagsHTML
+            ? `
+              <div class="activity-tags">
+                ${tagsHTML}
+              </div>
+            `
+            : ""
         }
 
-      },
 
-
-      /* ===================================================
-         ACTIVIDAD · GULLFOSS
-      =================================================== */
-
-      {
-        type: "activity",
-
-        time: "18:00",
-
-        icon: "🌊",
-
-        category: "CASCADA",
-
-        title: "Gullfoss",
-
-
-        location: {
-
-          name: "Gullfoss",
-
-          lat: 64.3271,
-
-          lng: -20.1199,
-
-          mapsUrl: "#"
-
-        },
-
-
-        description:
-          "Una de las cascadas más famosas del país y última gran parada del Círculo Dorado.",
-
-
-        tags: [
-
-          "⏱ 1 h",
-
-          "📸 Top"
-
-        ],
-
-
-        parking: {
-
-          name: "Gullfoss Upper Parking",
-
-          info:
-            "Parking superior junto al centro de visitantes y los accesos principales a los miradores.",
-
-          mapsUrl: "#"
-
-        },
-
-
-        important: [
-
-          "Puede haber bastante viento",
-
-          "El suelo puede estar mojado",
-
-          "Llevar impermeable"
-
-        ]
-
-      },
-
-
-      /* ===================================================
-         TRAYECTO · GULLFOSS → SECRET LAGOON
-      =================================================== */
-
-      {
-        type: "drive",
-
-        icon: "🚐",
-
-        from: "Gullfoss",
-
-        to: "Secret Lagoon",
-
-        km: 32,
-
-        minutes: 30,
-
-        mapsUrl: "#",
-
-
-        roads: [
-
-          "35",
-
-          "30"
-
-        ],
-
-
-        offlineDirections: [
-
-          "Salir de Gullfoss por la carretera 35.",
-
-          "Continuar en dirección a Flúðir.",
-
-          "Tomar la carretera 30.",
-
-          "Entrar en Flúðir y seguir las indicaciones hacia Secret Lagoon / Gamla Laugin.",
-
-          "Aparcar en el propio recinto de Secret Lagoon."
-
-        ],
-
-
-        parking: {
-
-          name: "Secret Lagoon Parking",
-
-          info:
-            "Parking del propio recinto de Secret Lagoon (Gamla Laugin).",
-
-          mapsUrl: "#"
-
+        ${
+          mapsHTML
+            ? `
+              <div class="activity-actions">
+                ${mapsHTML}
+              </div>
+            `
+            : ""
         }
 
-      },
 
+        ${parkingHTML}
 
-      /* ===================================================
-         ACTIVIDAD · SECRET LAGOON
-      =================================================== */
 
-      {
-        type: "activity",
+        ${bookingHTML}
 
-        time: "20:00",
 
-        icon: "♨️",
+        ${
+          importantHTML
+            ? `
+              <div class="activity-extra">
 
-        category: "RELAX",
+                <strong>
+                  ℹ️ Importante
+                </strong>
 
-        title: "Secret Lagoon",
+                <ul>
+                  ${importantHTML}
+                </ul>
 
-
-        location: {
-
-          name: "Secret Lagoon",
-
-          lat: 64.1377,
-
-          lng: -20.3097,
-
-          mapsUrl: "#"
-
-        },
-
-
-        description:
-          "Terminamos el día bañándonos en aguas termales antes de ir al camping.",
-
-
-        tags: [
-
-          "⏱ 1 h 30",
-
-          "🟠 Mejor reservar"
-
-        ],
-
-
-        featured: true,
-
-
-        booking: {
-
-          status: "recommended",
-
-          advice:
-            "Mejor reservar si vemos que quedan pocas plazas.",
-
-          url: "#"
-
-        },
-
-
-        parking: {
-
-          name: "Secret Lagoon Parking",
-
-          info:
-            "Parking en el propio recinto de Secret Lagoon.",
-
-          mapsUrl: "#"
-
-        },
-
-
-        important: [
-
-          "Llevar bañador",
-
-          "Llevar toalla",
-
-          "Revisar horario de última entrada"
-
-        ]
-
-      },
-
-
-      /* ===================================================
-         TRAYECTO · SECRET LAGOON → HELLA
-      =================================================== */
-
-      {
-        type: "drive",
-
-        icon: "🚐",
-
-        from: "Secret Lagoon",
-
-        to: "Hella Camping",
-
-        km: 47,
-
-        minutes: 40,
-
-        mapsUrl: "#",
-
-
-        roads: [
-
-          "30",
-
-          "1"
-
-        ],
-
-
-        offlineDirections: [
-
-          "Salir de Flúðir por la carretera 30.",
-
-          "Continuar hacia el sur hasta enlazar con la carretera 1.",
-
-          "Tomar la carretera 1 en dirección Hella.",
-
-          "Entrar en Hella y seguir hasta el camping."
-
-        ],
-
-
-        parking: {
-
-          name: "Hella Camping",
-
-          info:
-            "Final del Día 1. Pernoctamos aquí con la camper.",
-
-          mapsUrl: "#"
-
+              </div>
+            `
+            : ""
         }
 
-      }
+      </div>
 
-    ]
+    </article>
 
-  },
-
-
-  /* =======================================================
-     DÍA 2 · JUEVES 10
-  ======================================================= */
-
-  {
-    id: 2,
-
-    navDate: "JUE 10",
-
-    date: "JUEVES 10 DE SEPTIEMBRE",
-
-    title: "Costa Sur",
-
-    intro:
-      "Cascadas, costa sur y nuestra primera experiencia sobre el hielo.",
-
-    stats: [],
-
-    activities: []
-
-  },
+  `;
+}
 
 
-  /* =======================================================
-     DÍA 3 · VIERNES 11
-  ======================================================= */
+/* =========================================================
+   CREAR HTML DE UN TRAYECTO
+========================================================= */
 
-  {
-    id: 3,
+function createDriveHTML(drive) {
 
-    navDate: "VIE 11",
+  /* -------------------------------------------------------
+     CARRETERAS
+  ------------------------------------------------------- */
 
-    date: "VIERNES 11 DE SEPTIEMBRE",
-
-    title: "Glaciares",
-
-    intro:
-      "Uno de los días más espectaculares del viaje.",
-
-    stats: [],
-
-    activities: []
-
-  },
+  const roadsHTML = (drive.roads || [])
+    .map(road => `
+      <span class="road-number">
+        ${road}
+      </span>
+    `)
+    .join("");
 
 
-  /* =======================================================
-     DÍA 4 · SÁBADO 12
-  ======================================================= */
+  /* -------------------------------------------------------
+     INSTRUCCIONES OFFLINE
+  ------------------------------------------------------- */
 
-  {
-    id: 4,
-
-    navDate: "SÁB 12",
-
-    date: "SÁBADO 12 DE SEPTIEMBRE",
-
-    title: "Islandia",
-
-    intro:
-      "Día 4 del viaje.",
-
-    stats: [],
-
-    activities: []
-
-  },
+  const directionsHTML = (drive.offlineDirections || [])
+    .map((direction, index) => `
+      <li>
+        <strong>${index + 1}.</strong>
+        ${direction}
+      </li>
+    `)
+    .join("");
 
 
-  /* =======================================================
-     DÍA 5 · DOMINGO 13
-  ======================================================= */
+  /* -------------------------------------------------------
+     MAPS DEL TRAYECTO
+  ------------------------------------------------------- */
 
-  {
-    id: 5,
-
-    navDate: "DOM 13",
-
-    date: "DOMINGO 13 DE SEPTIEMBRE",
-
-    title: "Islandia",
-
-    intro:
-      "Día 5 del viaje.",
-
-    stats: [],
-
-    activities: []
-
-  },
+  const mapsHTML =
+    drive.mapsUrl &&
+    drive.mapsUrl !== "#"
+      ? `
+        <a
+          href="${drive.mapsUrl}"
+          class="drive-action"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          📍 Abrir ruta en Maps
+        </a>
+      `
+      : "";
 
 
-  /* =======================================================
-     DÍA 6 · LUNES 14
-  ======================================================= */
+  /* -------------------------------------------------------
+     PARKING AL LLEGAR
+  ------------------------------------------------------- */
 
-  {
-    id: 6,
+  const parkingHTML = drive.parking
+    ? `
+      <div class="drive-parking">
 
-    navDate: "LUN 14",
+        <div>
 
-    date: "LUNES 14 DE SEPTIEMBRE",
+          <strong>
+            🅿️ ${drive.parking.name || "Parking al llegar"}
+          </strong>
 
-    title: "Último día",
+          <span>
+            ${drive.parking.info || ""}
+          </span>
 
-    intro:
-      "Últimas horas en Islandia.",
+        </div>
 
-    stats: [],
+        ${
+          drive.parking.mapsUrl &&
+          drive.parking.mapsUrl !== "#"
+            ? `
+              <a
+                href="${drive.parking.mapsUrl}"
+                class="drive-action"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                📍 Abrir parking
+              </a>
+            `
+            : ""
+        }
 
-    activities: []
+      </div>
+    `
+    : "";
+
+
+  /* -------------------------------------------------------
+     TRAYECTO COMPLETO
+  ------------------------------------------------------- */
+
+  return `
+
+    <article class="drive">
+
+      <div class="drive-line">
+
+        <span class="drive-icon">
+          🚐
+        </span>
+
+      </div>
+
+
+      <div class="drive-card">
+
+        <p class="drive-label">
+          TRAYECTO EN CAMPER
+        </p>
+
+
+        <h4>
+          ${drive.from}
+          <span>→</span>
+          ${drive.to}
+        </h4>
+
+
+        <div class="drive-stats">
+
+          <span>
+            🛣️ ${drive.km} km
+          </span>
+
+          <span>
+            ⏱️ ${formatMinutes(drive.minutes)}
+          </span>
+
+        </div>
+
+
+        ${
+          roadsHTML
+            ? `
+              <div class="drive-roads">
+
+                <strong>
+                  Carreteras
+                </strong>
+
+                <div>
+                  ${roadsHTML}
+                </div>
+
+              </div>
+            `
+            : ""
+        }
+
+
+        ${parkingHTML}
+
+
+        <div class="drive-actions">
+
+          ${mapsHTML}
+
+
+          ${
+            directionsHTML
+              ? `
+                <button
+                  class="drive-action offline-route-button"
+                  type="button"
+                >
+                  🧭 Ruta sin conexión
+                </button>
+              `
+              : ""
+          }
+
+        </div>
+
+
+        ${
+          directionsHTML
+            ? `
+              <div class="offline-route hidden">
+
+                <div class="offline-route-header">
+
+                  <strong>
+                    🧭 Cómo llegar sin conexión
+                  </strong>
+
+                  <span>
+                    ${drive.from} → ${drive.to}
+                  </span>
+
+                </div>
+
+
+                <ol>
+                  ${directionsHTML}
+                </ol>
+
+              </div>
+            `
+            : ""
+        }
+
+      </div>
+
+    </article>
+
+  `;
+}
+
+
+/* =========================================================
+   FORMATEAR MINUTOS
+========================================================= */
+
+function formatMinutes(minutes) {
+
+  const hours =
+    Math.floor(minutes / 60);
+
+
+  const remainingMinutes =
+    minutes % 60;
+
+
+  if (hours === 0) {
+    return `${remainingMinutes} min`;
+  }
+
+
+  if (remainingMinutes === 0) {
+    return `${hours} h`;
+  }
+
+
+  return `${hours} h ${remainingMinutes} min`;
+}
+
+
+/* =========================================================
+   CAMBIAR DÍA ACTIVO
+========================================================= */
+
+function setActiveDay(selectedButton) {
+
+  dayButtons.forEach(button => {
+    button.classList.remove("active");
+  });
+
+
+  selectedButton.classList.add("active");
+}
+
+
+/* =========================================================
+   BOTONES DE LOS DÍAS
+========================================================= */
+
+dayButtons.forEach((button, index) => {
+
+  button.addEventListener("click", () => {
+
+    if (button.classList.contains("map-tab")) {
+      return;
+    }
+
+
+    const selectedDay =
+      tripDays[index];
+
+
+    if (!selectedDay) {
+      return;
+    }
+
+
+    setActiveDay(button);
+
+
+    mapSection.classList.add("hidden");
+
+    content.classList.remove("hidden");
+
+
+    renderDay(selectedDay);
+
+  });
+
+});
+
+
+/* =========================================================
+   ABRIR MAPA DESDE UN DÍA
+========================================================= */
+
+function openDayMap(dayId) {
+
+  const selectedDay =
+    tripDays.find(day => day.id === dayId);
+
+
+  if (!selectedDay) {
+    return;
+  }
+
+
+  dayButtons.forEach(button => {
+    button.classList.remove("active");
+  });
+
+
+  mapButton.classList.add("active");
+
+
+  content.classList.add("hidden");
+
+  mapSection.classList.remove("hidden");
+
+
+  const mapFilterButtons =
+    document.querySelectorAll(".map-filter");
+
+
+  mapFilterButtons.forEach(button => {
+    button.classList.remove("active");
+  });
+
+
+  const selectedFilter =
+    document.querySelector(
+      `.map-filter[data-map-filter="${dayId}"]`
+    );
+
+
+  if (selectedFilter) {
+    selectedFilter.classList.add("active");
+  }
+
+
+  setTimeout(() => {
+
+    map.invalidateSize();
+
+    drawDayRoute(selectedDay);
+
+  }, 150);
+
+}
+
+
+/* =========================================================
+   BOTÓN SUPERIOR MAPA
+========================================================= */
+
+mapButton.addEventListener("click", () => {
+
+  dayButtons.forEach(button => {
+    button.classList.remove("active");
+  });
+
+
+  mapButton.classList.add("active");
+
+
+  content.classList.add("hidden");
+
+  mapSection.classList.remove("hidden");
+
+
+  const mapFilters =
+    document.querySelectorAll(".map-filter");
+
+
+  mapFilters.forEach(button => {
+    button.classList.remove("active");
+  });
+
+
+  const allFilter =
+    document.querySelector(
+      '.map-filter[data-map-filter="all"]'
+    );
+
+
+  if (allFilter) {
+    allFilter.classList.add("active");
+  }
+
+
+  setTimeout(() => {
+
+    map.invalidateSize();
+
+    drawAllRoutes();
+
+  }, 150);
+
+});
+
+
+/* =========================================================
+   CLICS DINÁMICOS
+========================================================= */
+
+content.addEventListener("click", event => {
+
+  /* -------------------------------------------------------
+     VER RUTA DEL DÍA
+  ------------------------------------------------------- */
+
+  const routeButton =
+    event.target.closest(".day-route-button");
+
+
+  if (routeButton) {
+
+    const dayId =
+      Number(routeButton.dataset.day);
+
+
+    openDayMap(dayId);
+
+    return;
+  }
+
+
+  /* -------------------------------------------------------
+     RUTA OFFLINE
+  ------------------------------------------------------- */
+
+  const offlineButton =
+    event.target.closest(".offline-route-button");
+
+
+  if (offlineButton) {
+
+    const driveCard =
+      offlineButton.closest(".drive-card");
+
+
+    if (!driveCard) {
+      return;
+    }
+
+
+    const offlineRoute =
+      driveCard.querySelector(".offline-route");
+
+
+    if (!offlineRoute) {
+      return;
+    }
+
+
+    offlineRoute.classList.toggle("hidden");
+
+
+    if (offlineRoute.classList.contains("hidden")) {
+
+      offlineButton.textContent =
+        "🧭 Ruta sin conexión";
+
+    } else {
+
+      offlineButton.textContent =
+        "✕ Cerrar instrucciones";
+
+    }
 
   }
 
-];
+});
 
 
 /* =========================================================
-   COMPROBACIÓN
+   CARGA INICIAL
 ========================================================= */
 
-console.log("✅ data.js cargado correctamente");
-console.log("Datos del viaje:", tripDays);
+renderDay(tripDays[0]);
