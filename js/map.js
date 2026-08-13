@@ -200,5 +200,4 @@ function drawDayRoute(day) {
    Después crearemos los botones:
    TODO · DÍA 1 · DÍA 2 · ...
 ========================================================= */
-
 drawDayRoute(tripDays[0]);
