@@ -1,20 +1,6 @@
 /* =========================================================
-   DATOS DEL VIAJE
-
-   Este archivo contiene toda la información del itinerario.
-
-   Aquí guardamos:
-   - días
-   - actividades
-   - trayectos en camper
-   - coordenadas
-   - reservas
-   - parkings
-   - información importante
-
-   app.js utilizará estos datos para construir la web.
+   DATOS DEL VIAJE · ISLANDIA 2026
 ========================================================= */
-
 
 const tripDays = [
 
@@ -25,10 +11,8 @@ const tripDays = [
   {
     id: 1,
 
-    /* Información de la navegación */
     navDate: "MIÉ 9",
 
-    /* Información principal del día */
     date: "MIÉRCOLES 9 DE SEPTIEMBRE",
 
     title: "Círculo Dorado",
@@ -38,7 +22,7 @@ const tripDays = [
 
 
     /* -----------------------------------------------------
-       ESTADÍSTICAS DEL DÍA
+       RESUMEN DEL DÍA
     ----------------------------------------------------- */
 
     stats: [
@@ -66,15 +50,9 @@ const tripDays = [
     ],
 
 
-    /* -----------------------------------------------------
-       ACTIVIDADES Y TRAYECTOS
-
-       type: "activity" = actividad
-       type: "drive"    = trayecto en camper
-
-       El orden dentro de este array es exactamente
-       el orden en el que aparecerán en la web.
-    ----------------------------------------------------- */
+    /* =====================================================
+       ACTIVIDADES + TRAYECTOS
+    ===================================================== */
 
     activities: [
 
@@ -95,7 +73,6 @@ const tripDays = [
         title: "Recogida de la camper",
 
 
-        /* Localización para el mapa */
         location: {
 
           name: "Keflavík",
@@ -104,7 +81,6 @@ const tripDays = [
 
           lng: -22.6056,
 
-          /* Más adelante pondremos el enlace real */
           mapsUrl: "#"
 
         },
@@ -127,7 +103,6 @@ const tripDays = [
         ],
 
 
-        /* Información práctica importante */
         important: [
 
           "Comprobar combustible",
@@ -158,12 +133,9 @@ const tripDays = [
 
         minutes: 90,
 
-
-        /* Enlace real a Google Maps más adelante */
         mapsUrl: "#",
 
 
-        /* Carreteras principales */
         roads: [
 
           "41",
@@ -175,10 +147,6 @@ const tripDays = [
         ],
 
 
-        /*
-          Instrucciones que podremos consultar incluso
-          aunque no tengamos cobertura.
-        */
         offlineDirections: [
 
           "Salir de Keflavík por la carretera 41 en dirección Reykjavík.",
@@ -187,16 +155,17 @@ const tripDays = [
 
           "Tomar la carretera 36 hacia Þingvellir.",
 
-          "Seguir las indicaciones del Parque Nacional."
+          "Seguir las indicaciones hacia el Visitor Center de Þingvellir y P1 Hakið."
 
         ],
 
 
-        /* Información sobre dónde aparcar al llegar */
         parking: {
 
+          name: "P1 Hakið",
+
           info:
-            "Usar uno de los parkings oficiales del Parque Nacional.",
+            "Parking junto al Visitor Center de Þingvellir y la parte alta de Almannagjá. Será nuestro punto de llegada al parque.",
 
           mapsUrl: "#"
 
@@ -251,8 +220,10 @@ const tripDays = [
 
         parking: {
 
+          name: "P1 Hakið",
+
           info:
-            "Parking oficial del Parque Nacional.",
+            "Parking junto al Visitor Center y la parte alta de Almannagjá.",
 
           mapsUrl: "#"
 
@@ -309,21 +280,25 @@ const tripDays = [
 
           "Salir de Þingvellir por la carretera 36.",
 
-          "Continuar por la 365.",
+          "Continuar por la carretera 365.",
 
           "Seguir hacia Laugarvatn.",
 
-          "Tomar la carretera 37.",
+          "Continuar por la carretera 37.",
 
-          "Continuar por la carretera 35 hasta Geysir."
+          "Tomar la carretera 35 en dirección Geysir.",
+
+          "Al llegar, seguir las indicaciones hacia el área de aparcamiento del Geysir Center."
 
         ],
 
 
         parking: {
 
+          name: "Geysir Center Parking",
+
           info:
-            "Parking junto al área de visitantes de Geysir.",
+            "Aparcamiento del área de visitantes de Geysir, frente a la zona geotérmica.",
 
           mapsUrl: "#"
 
@@ -376,8 +351,10 @@ const tripDays = [
 
         parking: {
 
+          name: "Geysir Center Parking",
+
           info:
-            "Parking junto al centro de visitantes.",
+            "Aparcamiento junto al Geysir Center y frente al acceso a la zona geotérmica.",
 
           mapsUrl: "#"
 
@@ -417,17 +394,21 @@ const tripDays = [
 
           "Salir de Geysir por la carretera 35.",
 
-          "Continuar aproximadamente 10 km.",
+          "Continuar aproximadamente 10 km en dirección Gullfoss.",
 
-          "Seguir las indicaciones hacia Gullfoss."
+          "Seguir las indicaciones hacia Gullfoss.",
+
+          "Al llegar, dirigirse al aparcamiento superior junto al Visitor Center."
 
         ],
 
 
         parking: {
 
+          name: "Gullfoss Upper Parking",
+
           info:
-            "Parking principal de Gullfoss.",
+            "Parking superior junto al Gullfoss Visitor Center. Desde aquí se accede fácilmente a los miradores.",
 
           mapsUrl: "#"
 
@@ -480,8 +461,10 @@ const tripDays = [
 
         parking: {
 
+          name: "Gullfoss Upper Parking",
+
           info:
-            "Parking principal junto al centro de visitantes.",
+            "Parking superior junto al centro de visitantes y los accesos principales a los miradores.",
 
           mapsUrl: "#"
 
@@ -534,19 +517,23 @@ const tripDays = [
 
           "Salir de Gullfoss por la carretera 35.",
 
-          "Continuar hacia Flúðir.",
+          "Continuar en dirección a Flúðir.",
 
           "Tomar la carretera 30.",
 
-          "Seguir las indicaciones hacia Secret Lagoon."
+          "Entrar en Flúðir y seguir las indicaciones hacia Secret Lagoon / Gamla Laugin.",
+
+          "Aparcar en el propio recinto de Secret Lagoon."
 
         ],
 
 
         parking: {
 
+          name: "Secret Lagoon Parking",
+
           info:
-            "Parking en el propio recinto.",
+            "Parking del propio recinto de Secret Lagoon (Gamla Laugin).",
 
           mapsUrl: "#"
 
@@ -597,14 +584,9 @@ const tripDays = [
         ],
 
 
-        /*
-          Esta propiedad hace que la tarjeta
-          aparezca visualmente destacada.
-        */
         featured: true,
 
 
-        /* Información de reserva */
         booking: {
 
           status: "recommended",
@@ -619,8 +601,10 @@ const tripDays = [
 
         parking: {
 
+          name: "Secret Lagoon Parking",
+
           info:
-            "Parking gratuito en el recinto.",
+            "Parking en el propio recinto de Secret Lagoon.",
 
           mapsUrl: "#"
 
@@ -636,6 +620,62 @@ const tripDays = [
           "Revisar horario de última entrada"
 
         ]
+
+      },
+
+
+      /* ===================================================
+         TRAYECTO · SECRET LAGOON → HELLA
+      =================================================== */
+
+      {
+        type: "drive",
+
+        icon: "🚐",
+
+        from: "Secret Lagoon",
+
+        to: "Hella Camping",
+
+        km: 47,
+
+        minutes: 40,
+
+        mapsUrl: "#",
+
+
+        roads: [
+
+          "30",
+
+          "1"
+
+        ],
+
+
+        offlineDirections: [
+
+          "Salir de Flúðir por la carretera 30.",
+
+          "Continuar hacia el sur hasta enlazar con la carretera 1.",
+
+          "Tomar la carretera 1 en dirección Hella.",
+
+          "Entrar en Hella y seguir hasta el camping."
+
+        ],
+
+
+        parking: {
+
+          name: "Hella Camping",
+
+          info:
+            "Final del Día 1. Pernoctamos aquí con la camper.",
+
+          mapsUrl: "#"
+
+        }
 
       }
 
@@ -660,11 +700,6 @@ const tripDays = [
     intro:
       "Cascadas, costa sur y nuestra primera experiencia sobre el hielo.",
 
-
-    /*
-      Lo completaremos cuando trabajemos
-      específicamente el Día 2.
-    */
     stats: [],
 
     activities: []
@@ -767,12 +802,8 @@ const tripDays = [
 
 
 /* =========================================================
-   PRUEBA
-
-   Podemos ver este mensaje en la consola para comprobar
-   que data.js se ha cargado correctamente.
+   COMPROBACIÓN
 ========================================================= */
 
 console.log("✅ data.js cargado correctamente");
-
 console.log("Datos del viaje:", tripDays);
