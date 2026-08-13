@@ -1597,3 +1597,40 @@ body {
   }
 
 }
+
+/* =========================================================
+   PARKING · NOMBRE + INFORMACIÓN
+
+   Da formato al parking que mostramos tanto
+   en las actividades como al final de los trayectos.
+========================================================= */
+
+
+/* Contenedor del nombre y descripción del parking */
+
+.drive-parking > div {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+
+/* Nombre concreto del parking
+   Ejemplo: "🅿️ P1 Hakið" */
+
+.drive-parking > div strong {
+  color: var(--navy);
+
+  font-size: 12px;
+}
+
+
+/* Explicación del parking */
+
+.drive-parking > div span {
+  color: var(--muted);
+
+  font-size: 12px;
+  line-height: 1.45;
+}
