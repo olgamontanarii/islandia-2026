@@ -95,11 +95,14 @@ function renderDay(day) {
         <div class="stats">
           ${statsHTML}
         </div>
-
+         <!-- =====================================
+              ACCIONES DEL DÍA
+             ====================================== -->
+      <div class="day-actions">
+        <button class="day-route-button" data-day="${day.id}" > 🗺️ Ver ruta del día </button>
       </div>
-
+      </div>
     </section>
-
 
     <!-- =====================================
          TIMELINE
@@ -301,6 +304,99 @@ dayButtons.forEach((button, index) => {
 });
 
 /* =========================================================
+   ABRIR EL MAPA DESDE UN DÍA
+
+   Esta función se ejecutará cuando pulsemos:
+
+   "🗺 Ver ruta del día"
+========================================================= */
+
+function openDayMap(dayId) {
+
+  /* Buscamos el día correspondiente */
+  const selectedDay =
+    tripDays.find(day => day.id === dayId);
+
+
+  /* Si por algún motivo no existe, paramos */
+  if (!selectedDay) {
+    return;
+  }
+
+
+  /* =======================================================
+     CAMBIAR A LA PESTAÑA MAPA
+  ======================================================= */
+
+  /* Quitamos "active" de la navegación superior */
+  dayButtons.forEach(button => {
+    button.classList.remove("active");
+  });
+
+
+  /* Activamos MAPA */
+  mapButton.classList.add("active");
+
+
+  /* Ocultamos el itinerario */
+  content.classList.add("hidden");
+
+
+  /* Mostramos la sección del mapa */
+  mapSection.classList.remove("hidden");
+
+
+  /* =======================================================
+     CAMBIAR EL FILTRO DEL MAPA
+  ======================================================= */
+
+  const mapFilterButtons =
+    document.querySelectorAll(".map-filter");
+
+
+  /* Quitamos active de todos los filtros */
+  mapFilterButtons.forEach(button => {
+    button.classList.remove("active");
+  });
+
+
+  /*
+    Buscamos específicamente el botón:
+
+    data-map-filter="1"
+    data-map-filter="2"
+    etc.
+  */
+  const selectedFilter =
+    document.querySelector(
+      `.map-filter[data-map-filter="${dayId}"]`
+    );
+
+
+  if (selectedFilter) {
+    selectedFilter.classList.add("active");
+  }
+
+
+  /* =======================================================
+     DIBUJAR LA RUTA
+  ======================================================= */
+
+  /*
+    Esperamos a que el mapa sea visible antes
+    de pedirle a Leaflet que calcule su tamaño.
+  */
+  setTimeout(() => {
+
+    map.invalidateSize();
+
+    drawDayRoute(selectedDay);
+
+  }, 150);
+
+}
+
+/* =========================================================
    PESTAÑA MAPA GENERAL
 
    Cuando pulsamos "MAPA":
@@ -352,5 +448,47 @@ mapButton.addEventListener("click", () => {
     drawDayRoute(tripDays[0]);
 
   }, 150);
+
+});
+
+/* =========================================================
+   BOTÓN "VER RUTA DEL DÍA"
+
+   Utilizamos delegación de eventos porque este botón
+   se genera dinámicamente dentro de renderDay().
+========================================================= */
+
+content.addEventListener("click", event => {
+
+  /*
+    Comprobamos si lo que hemos pulsado
+    es el botón de ruta.
+  */
+  const routeButton =
+    event.target.closest(".day-route-button");
+
+
+  /*
+    Si hemos pulsado cualquier otra cosa,
+    no hacemos nada.
+  */
+  if (!routeButton) {
+    return;
+  }
+
+
+  /*
+    data-day viene del HTML como texto.
+
+    Lo convertimos a número:
+
+    "1" → 1
+  */
+  const dayId =
+    Number(routeButton.dataset.day);
+
+
+  /* Abrimos directamente ese día en el mapa */
+  openDayMap(dayId);
 
 });
