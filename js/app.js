@@ -1,6 +1,5 @@
 console.log("✅ app.js cargado correctamente");
 console.log("Días disponibles:", tripDays);
-
 /* =========================================================
    APLICACIÓN DEL ITINERARIO
 
