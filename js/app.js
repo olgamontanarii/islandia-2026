@@ -318,7 +318,7 @@ dayButtons.forEach((button, index) => {
 
 mapButton.addEventListener("click", () => {
 
-  /* Quitamos "active" de todos los días */
+  /* Quitamos "active" de todos los botones */
   dayButtons.forEach(button => {
     button.classList.remove("active");
   });
@@ -337,18 +337,22 @@ mapButton.addEventListener("click", () => {
 
 
   /*
-    IMPORTANTE:
+    Esperamos un instante para que el navegador
+    termine de mostrar físicamente el contenedor.
 
-    Leaflet se creó cuando el mapa estaba oculto.
+    Después:
 
-    Por eso al mostrarlo puede calcular mal
-    el tamaño del contenedor.
-
-    invalidateSize() obliga a Leaflet a
-    volver a medir el mapa.
+    1. Leaflet vuelve a calcular el tamaño.
+    2. Volvemos a dibujar la ruta del Día 1.
+       Así fitBounds() se ejecuta cuando el mapa
+       YA tiene unas dimensiones reales.
   */
   setTimeout(() => {
+
     map.invalidateSize();
-  }, 100);
+
+    drawDayRoute(tripDays[0]);
+
+  }, 150);
 
 });
