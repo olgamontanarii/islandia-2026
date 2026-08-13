@@ -1,6 +1,5 @@
 /* =========================================================
    DATOS DEL VIAJE
-
    Este archivo contiene la INFORMACIÓN del viaje.
 
    No decide cómo se ve la página.
@@ -11,12 +10,8 @@
    app.js para construir cada día.
 ========================================================= */
 
-
 const tripDays = [
-
-  /* =======================================================
-     DÍA 1 · MIÉRCOLES 9
-  ======================================================= */
+  /* DÍA 1 · MIÉRCOLES 9 */
 
   {
     id: 1,
@@ -29,7 +24,7 @@ const tripDays = [
     title: "Círculo Dorado",
 
     intro:
-      "Nuestro primer día en Islandia. Camper, paisajes volcánicos y aguas termales.",
+      "Primer día en Islandia. Camper, paisajes volcánicos y aguas termales.",
 
 
     /* -----------------------------------------------------
@@ -64,7 +59,6 @@ const tripDays = [
     ----------------------------------------------------- */
 
     activities: [
-
       /* Recogida camper */
       {
         time: "12:00",
@@ -72,7 +66,13 @@ const tripDays = [
 
         category: "INICIO",
         title: "Recogida de la camper",
-
+         
+         /* Localización utilizada por el mapa */
+         location: {
+           name: "Keflavík",
+            lat: 63.9850,
+            lng: -22.6056
+         },
         description:
           "Recogemos la camper, organizamos equipaje y dejamos todo listo para empezar la ruta.",
 
@@ -92,7 +92,14 @@ const tripDays = [
 
         category: "PARQUE NACIONAL",
         title: "Þingvellir",
-
+        
+         /* Localización utilizada por el mapa */
+         location: {
+            name: "Þingvellir",
+            lat: 64.2559,
+            lng: -21.1300
+         },
+         
         description:
           "Primera parada del viaje y paseo por una de las zonas geológicas más importantes de Islandia.",
 
@@ -141,7 +148,14 @@ const tripDays = [
 
         category: "CASCADA",
         title: "Gullfoss",
-
+         
+         /* Localización utilizada por el mapa */
+         location: {
+            name: "Gullfoss",
+            lat: 64.3271,
+            lng: -20.1199
+         },
+         
         description:
           "Una de las cascadas más famosas del país y última gran parada del Círculo Dorado.",
 
