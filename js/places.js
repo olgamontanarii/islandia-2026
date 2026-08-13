@@ -1,6 +1,5 @@
 /* =========================================================
    PUNTOS ÚTILES DEL VIAJE
-
    Este archivo contiene lugares que no forman parte
    directamente del itinerario de cada día.
 
